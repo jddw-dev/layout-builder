@@ -1,0 +1,11 @@
+.layout-builder {
+  &__sidebar {
+    padding: 20px;
+  }
+
+  &__main-content {
+    height: 100%;
+
+    padding: 25px;
+  }
+}

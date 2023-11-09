@@ -1,0 +1,14 @@
+.template-elements-list {
+  text-align: center;
+
+  button {
+    display: block;
+    margin: 10px auto;
+  }
+}
+
+.dragdrop-element {
+  &:active {
+    z-index: 1000;
+  }
+}

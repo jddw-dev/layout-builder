@@ -1,0 +1,7 @@
+<section class="layout-preview">
+  <div *ngIf="layout$ | async as layout">
+    <app-template-element-preview
+      [element]="layout"
+    ></app-template-element-preview>
+  </div>
+</section>
