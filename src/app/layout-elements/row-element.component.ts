@@ -28,7 +28,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
 
       .row-element {
         padding: 10px;
-        border: blue dashed 2px;
+        border: #cccccc dashed 2px;
         border-radius: 8px;
 
         margin-bottom: 15px;

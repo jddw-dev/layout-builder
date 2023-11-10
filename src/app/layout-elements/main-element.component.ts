@@ -23,7 +23,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
 
       .main-element {
         padding: 10px;
-        border: red dashed 2px;
+        border: #000000 dashed 2px;
         border-radius: 2px;
       }
     `,

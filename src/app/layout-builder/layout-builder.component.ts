@@ -21,13 +21,17 @@ import { DEFAULT_LAYOUT } from './default-layout';
           <template-elements-list></template-elements-list>
         </div>
 
-        <div class="layout-builder__main-content col-8 col-md-10">
+        <div class="layout-builder__main-content col-6 col-md-9">
           <layout-preview></layout-preview>
 
           <div style="margin-top: 20px;">
             <h2>Generated JSON</h2>
             <pre>{{ builderFacade.currentLayoutToExport$ | async | json }}</pre>
           </div>
+        </div>
+
+        <div class="layout-builder__options col-2 col-md-1">
+          <h2 class="text-center">Options</h2>
         </div>
       </div>
     </div>
@@ -41,13 +45,17 @@ import { DEFAULT_LAYOUT } from './default-layout';
       .layout-builder__sidebar {
         background-color: #f5f5f5;
         border-right: 1px solid #e0e0e0;
-        height: 100%;
-        overflow-y: auto;
+        padding: 20px 10px;
+      }
+
+      .layout-builder__options {
+        background-color: #f5f5f5;
+        border-left: 1px solid #e0e0e0;
+        padding: 20px 10px;
       }
 
       .layout-builder__main-content {
-        height: 100%;
-        overflow-y: auto;
+        padding-top: 20px;
       }
     `,
   ],

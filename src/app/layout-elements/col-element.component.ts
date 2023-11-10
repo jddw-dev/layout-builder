@@ -29,7 +29,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
       .col-element {
         padding: 10px;
         margin: 4px;
-        border: green solid 2px;
+        border: #aaaaaa dashed 2px;
         border-radius: 0 8px 0 0;
 
         display: block;
