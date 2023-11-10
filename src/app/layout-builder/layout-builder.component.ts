@@ -1,5 +1,5 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { BuilderFacade } from '../+state/builder.facade';
 import { LayoutPreviewComponent } from '../layout-preview/layout-preview.component';
 import { TemplateElementsListComponent } from './../template-elements-list/template-elements-list.component';
@@ -57,8 +57,25 @@ import { DEFAULT_LAYOUT } from './default-layout';
       .layout-builder__main-content {
         padding-top: 20px;
       }
+
+      .element-wrapper.drag-over > * > .element-preview {
+        border: 2px solid red;
+      }
+
+      .element-wrapper,
+      .main-element,
+      .row-element,
+      .col-element,
+      .element-wrapper > *,
+      .main-element > *,
+      .row-element > *,
+      .col-element > * {
+        // display: flex;
+        flex-basis: 100%;
+      }
     `,
   ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class LayoutBuilderComponent implements OnInit {
   builderFacade = inject(BuilderFacade);
