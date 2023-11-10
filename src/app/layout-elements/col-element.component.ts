@@ -13,7 +13,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
     DragDropModule,
   ],
   template: `
-    <div class="col-element">
+    <div class="col-element  element-preview">
       <template-element-preview
         *ngFor="let templateElement of content"
         [element]="templateElement"
@@ -22,14 +22,10 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
   `,
   styles: [
     `
-      :host {
-        display: contents;
-      }
-
       .col-element {
         padding: 10px;
         margin: 4px;
-        border: green solid 2px;
+        border: #aaaaaa dashed 2px;
         border-radius: 0 8px 0 0;
 
         display: block;

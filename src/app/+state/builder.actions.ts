@@ -1,4 +1,5 @@
 import { createActionGroup, props } from '@ngrx/store';
+import { DropPosition } from '../core/models/drop-position';
 import { TemplateElementItem } from '../core/models/template-element-item';
 import { TemplateElement } from './../core/models/template-element';
 
@@ -9,7 +10,7 @@ export const BuilderActions = createActionGroup({
     'Load Layout Success': props<{ layout: TemplateElement }>(),
     'Drag Start': props<{ element: TemplateElementItem }>(),
     'Drag End': props<{ element: TemplateElementItem }>(),
-    Drop: props<{ parentId: string }>(),
+    Drop: props<{ parentId: string; insertPosition: DropPosition }>(),
     'Drop Success': props<{ updatedLayout: TemplateElement }>(),
   },
 });

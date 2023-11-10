@@ -11,6 +11,7 @@ import { TemplateElementItem } from '../../core/models/template-element-item';
       class="btn btn-dark dragdrop-element"
       pDraggable
       (onDragStart)="dragStart()"
+      (onDrag)="drag($event)"
     >
       {{ element.displayName }}
     </button>
@@ -35,5 +36,11 @@ export class TemplateElementItemComponent {
 
   dragStart(): void {
     this.onDragStart.emit();
+  }
+
+  drag(event: DragEvent): void {
+    // console.log('dragEvent:');
+    // const position = { x: event.clientX, y: event.clientY };
+    // console.log(position);
   }
 }
