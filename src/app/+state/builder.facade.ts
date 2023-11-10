@@ -7,6 +7,7 @@ import {
   selectBuilderCurrentItem,
   selectBuilderCurrentLayout,
   selectBuilderCurrentLayoutAndItem,
+  selectBuilderLayoutToExport,
 } from './builder.selectors';
 
 @Injectable({ providedIn: 'root' })
@@ -14,6 +15,7 @@ export class BuilderFacade {
   private readonly store = inject(Store);
 
   currentLayout$ = this.store.pipe(select(selectBuilderCurrentLayout));
+  currentLayoutToExport$ = this.store.pipe(select(selectBuilderLayoutToExport));
   currentItem$ = this.store.pipe(select(selectBuilderCurrentItem));
   currentLayoutAndItem$ = this.store.pipe(
     select(selectBuilderCurrentLayoutAndItem)
