@@ -1,16 +1,48 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { DragDropModule } from 'primeng/dragdrop';
-import { BuilderFacade } from '../+state/builder.facade';
 import { TemplateElement } from '../core/models/template-element';
-import { ColElementComponent } from '../layout-elements/col-element/col-element.component';
-import { MainElementComponent } from '../layout-elements/main-element/main-element.component';
-import { RowElementComponent } from '../layout-elements/row-element/row-element.component';
+import { ColElementComponent } from '../layout-elements/col-element.component';
+import { MainElementComponent } from '../layout-elements/main-element.component';
+import { RowElementComponent } from '../layout-elements/row-element.component';
+import { BuilderFacade } from './../+state/builder.facade';
 
 @Component({
-  selector: 'app-template-element-preview',
-  templateUrl: './template-element-preview.component.html',
-  styleUrls: ['./template-element-preview.component.scss'],
+  selector: 'template-element-preview',
+  template: `
+    <div
+      [ngSwitch]="element.type"
+      pDroppable
+      (onDrop)="drop($event)"
+      class="element-wrapper"
+    >
+      <main-element
+        *ngSwitchCase="'main'"
+        [content]="element.content"
+      ></main-element>
+
+      <row-element
+        *ngSwitchCase="'row'"
+        [content]="element.content"
+      ></row-element>
+
+      <col-element
+        *ngSwitchCase="'column'"
+        [content]="element.content"
+      ></col-element>
+    </div>
+  `,
+  styles: [
+    `
+      :host {
+        display: contents;
+      }
+
+      .element-wrapper {
+        display: contents;
+      }
+    `,
+  ],
   standalone: true,
   imports: [
     CommonModule,
@@ -23,7 +55,7 @@ import { RowElementComponent } from '../layout-elements/row-element/row-element.
 export class TemplateElementPreviewComponent {
   @Input({ required: true }) element: TemplateElement;
 
-  constructor(private builderFacade: BuilderFacade) {}
+  private builderFacade = inject(BuilderFacade);
 
   drop(event: any) {
     event.preventDefault();
