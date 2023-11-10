@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, pipe, switchMap, withLatestFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { TemplateElement } from '../core/models/template-element';
+import { TemplateElementBuilderFactory } from '../core/template-element-builder-factory/template-element-builder.factory';
 import { BuilderActions } from './builder.actions';
 import { BuilderFacade } from './builder.facade';
 
@@ -10,7 +11,10 @@ import { BuilderFacade } from './builder.facade';
 export class BuilderEffects {
   private actions$ = inject(Actions);
 
-  constructor(private builderFacade: BuilderFacade) {}
+  constructor(
+    private builderFacade: BuilderFacade,
+    private templateElementBuilderFactory: TemplateElementBuilderFactory
+  ) {}
 
   /**
    * This effect is used to generate ID for each layout element
@@ -54,27 +58,17 @@ export class BuilderEffects {
       pipe(
         withLatestFrom(this.builderFacade.currentLayoutAndItem$),
         switchMap(([{ parentId }, { currentLayout, currentItem }]) => {
-          // TODO : faire une factory ou dans le style ?
-          // Ici juste pour tester
           let newElement: TemplateElement | null = null;
 
-          if (currentItem?.type === '2-cols-50') {
-            newElement = {
-              id: uuidv4(),
-              type: 'row',
-              content: [
-                {
-                  id: uuidv4(),
-                  type: 'column',
-                  content: [],
-                },
-                {
-                  id: uuidv4(),
-                  type: 'column',
-                  content: [],
-                },
-              ],
-            };
+          if (currentItem) {
+            const builder =
+              this.templateElementBuilderFactory.createElementBuilder(
+                currentItem.type
+              );
+
+            if (builder) {
+              newElement = builder.getElement();
+            }
           }
 
           let updatedLayout: TemplateElement = {

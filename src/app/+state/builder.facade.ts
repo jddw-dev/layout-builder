@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { TemplateElement } from '../core/models/template-element';
+import { TemplateElementItem } from '../core/models/template-element-item';
 import { BuilderActions } from './builder.actions';
 import {
   selectBuilderCurrentItem,
@@ -20,6 +21,10 @@ export class BuilderFacade {
 
   loadLayout(layout: TemplateElement) {
     this.store.dispatch(BuilderActions.loadLayout({ layout }));
+  }
+
+  dragStart(element: TemplateElementItem) {
+    this.store.dispatch(BuilderActions.dragStart({ element }));
   }
 
   drop(parentId: string) {

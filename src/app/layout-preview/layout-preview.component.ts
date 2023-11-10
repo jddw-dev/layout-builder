@@ -1,17 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BuilderFacade } from '../+state/builder.facade';
 import { TemplateElementPreviewComponent } from '../template-element-preview/template-element-preview.component';
 
 @Component({
-  selector: 'app-layout-preview',
+  selector: 'layout-preview',
   standalone: true,
   imports: [CommonModule, TemplateElementPreviewComponent],
-  templateUrl: './layout-preview.component.html',
-  styleUrls: ['./layout-preview.component.scss'],
+  template: `
+    <section class="layout-preview">
+      <div *ngIf="layout$ | async as layout">
+        <template-element-preview [element]="layout"></template-element-preview>
+      </div>
+    </section>
+  `,
 })
 export class LayoutPreviewComponent {
+  private builderFacade = inject(BuilderFacade);
   layout$ = this.builderFacade.currentLayout$;
-
-  constructor(private builderFacade: BuilderFacade) {}
 }

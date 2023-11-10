@@ -1,73 +1,69 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
-import { Store } from '@ngrx/store';
 import { DragDropModule } from 'primeng/dragdrop';
-import { BuilderActions } from '../+state/builder.actions';
-import { BuilderState } from '../+state/builder.reducer';
-
-export interface TemplateElementItem {
-  type: string;
-  displayName: string;
-}
+import { BuilderFacade } from '../+state/builder.facade';
+import { TemplateElementItem } from '../core/models/template-element-item';
+import { availableTemplateElementsItems } from './available-template-elements-items';
+import { TemplateElementItemComponent } from './items/template-element-item.component';
 
 @Component({
-  selector: 'app-template-elements-list',
+  selector: 'template-elements-list',
   standalone: true,
-  imports: [CommonModule, MatDividerModule, DragDropModule],
-  templateUrl: './template-elements-list.component.html',
-  styleUrls: ['./template-elements-list.component.scss'],
+  imports: [
+    NgFor,
+    MatDividerModule,
+    DragDropModule,
+    TemplateElementItemComponent,
+  ],
+  template: `
+    <section class="template-elements-list">
+      <h1>Template Elements</h1>
+      <mat-divider></mat-divider>
+      <h2>Containers</h2>
+      <mat-divider></mat-divider>
+
+      <div>
+        <template-element-item
+          *ngFor="let containerItem of containerItems"
+          [element]="containerItem"
+          (onDragStart)="onDragStart(containerItem)"
+        ></template-element-item>
+      </div>
+
+      <mat-divider></mat-divider>
+      <h2>Content</h2>
+      <mat-divider></mat-divider>
+
+      <div>
+        <template-element-item
+          *ngFor="let contentItem of contentItems"
+          [element]="contentItem"
+          (onDragStart)="onDragStart(contentItem)"
+        ></template-element-item>
+      </div>
+    </section>
+  `,
+  styles: [
+    `
+      .template-elements-list {
+        text-align: center;
+      }
+    `,
+  ],
 })
 export class TemplateElementsListComponent {
-  constructor(private store: Store<BuilderState>) {}
+  private builderFacade = inject(BuilderFacade);
 
-  containersItems: TemplateElementItem[] = [
-    {
-      type: '1-col-50',
-      displayName: '1 col, 50 %',
-    },
+  containerItems = availableTemplateElementsItems.filter(
+    (item) => item.isContainer
+  );
 
-    {
-      type: '1-col-100',
-      displayName: '1 col, 100 %',
-    },
-
-    {
-      type: '2-cols-50',
-      displayName: '2 cols, 50/50 %',
-    },
-
-    {
-      type: 'accordion',
-      displayName: 'accordion',
-    },
-  ];
-
-  contentItems: TemplateElementItem[] = [
-    {
-      type: 'tab',
-      displayName: 'Tab',
-    },
-
-    {
-      type: 'divided',
-      displayName: 'Divider',
-    },
-
-    {
-      type: 'title',
-      displayName: 'Title',
-    },
-
-    {
-      type: 'text',
-      displayName: 'Text',
-    },
-  ];
+  contentItems = availableTemplateElementsItems.filter(
+    (item) => !item.isContainer
+  );
 
   onDragStart(element: TemplateElementItem) {
-    this.store.dispatch(BuilderActions.dragStart({ element }));
+    this.builderFacade.dragStart(element);
   }
-
-  onDragEnd(element: TemplateElementItem) {}
 }

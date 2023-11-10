@@ -1,6 +1,6 @@
 import { createActionGroup, props } from '@ngrx/store';
+import { TemplateElementItem } from '../core/models/template-element-item';
 import { TemplateElement } from './../core/models/template-element';
-import { TemplateElementItem } from './../template-elements-list/template-elements-list.component';
 
 export const BuilderActions = createActionGroup({
   source: 'Layout Builder',

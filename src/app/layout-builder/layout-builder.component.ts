@@ -1,51 +1,50 @@
-import { CdkDropListGroup } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { Component, OnInit, inject } from '@angular/core';
 import { BuilderFacade } from '../+state/builder.facade';
-import { TemplateElement } from '../core/models/template-element';
 import { LayoutPreviewComponent } from '../layout-preview/layout-preview.component';
 import { TemplateElementsListComponent } from './../template-elements-list/template-elements-list.component';
+import { DEFAULT_LAYOUT } from './default-layout';
 
 @Component({
   standalone: true,
-  selector: 'app-layout-builder',
-  templateUrl: './layout-builder.component.html',
-  styleUrls: ['./layout-builder.component.scss'],
-  imports: [
-    MatSidenavModule,
-    TemplateElementsListComponent,
-    LayoutPreviewComponent,
-    CdkDropListGroup,
+  selector: 'layout-builder',
+  template: `
+    <div class="container-fluid">
+      <div class="layout-builder row">
+        <div class="layout-builder__sidebar col-4 col-md-2">
+          <template-elements-list></template-elements-list>
+        </div>
+
+        <div class="layout-builder__main-content col-8 col-md-10">
+          <layout-preview></layout-preview>
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [
+    `
+      .layout-builder {
+        height: 100vh;
+      }
+
+      .layout-builder__sidebar {
+        background-color: #f5f5f5;
+        border-right: 1px solid #e0e0e0;
+        height: 100%;
+        overflow-y: auto;
+      }
+
+      .layout-builder__main-content {
+        height: 100%;
+        overflow-y: auto;
+      }
+    `,
   ],
+  imports: [TemplateElementsListComponent, LayoutPreviewComponent],
 })
 export class LayoutBuilderComponent implements OnInit {
-  private readonly defaultLayout: TemplateElement = {
-    type: 'main',
-    content: [
-      {
-        type: 'row',
-        content: [
-          {
-            type: 'column',
-            content: [
-              {
-                type: 'row',
-                content: [
-                  { type: 'column', content: [] },
-                  { type: 'column', content: [] },
-                ],
-              },
-            ],
-          },
-          { type: 'column', content: [] },
-        ],
-      },
-    ],
-  };
-
-  constructor(private builderFacade: BuilderFacade) {}
+  private builderFacade = inject(BuilderFacade);
 
   ngOnInit(): void {
-    this.builderFacade.loadLayout(this.defaultLayout);
+    this.builderFacade.loadLayout(DEFAULT_LAYOUT);
   }
 }

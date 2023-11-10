@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { TemplateElement } from '../core/models/template-element';
-import { TemplateElementItem } from '../template-elements-list/template-elements-list.component';
+import { TemplateElementItem } from '../core/models/template-element-item';
 import { BuilderActions } from './builder.actions';
 
 export interface BuilderState {
