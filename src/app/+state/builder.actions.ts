@@ -10,6 +10,15 @@ export const BuilderActions = createActionGroup({
     'Load Layout Success': props<{ layout: TemplateElement }>(),
     'Drag Start': props<{ element: TemplateElementItem }>(),
     'Drag End': props<{ element: TemplateElementItem }>(),
+    'Display Ghost': props<{
+      parentId: string;
+      insertPosition: DropPosition;
+    }>(),
+    'Display Ghost Success': props<{
+      updatedLayout: TemplateElement;
+      parentId: string;
+      insertPosition: DropPosition;
+    }>(),
     Drop: props<{ parentId: string; insertPosition: DropPosition }>(),
     'Drop Success': props<{ updatedLayout: TemplateElement }>(),
   },

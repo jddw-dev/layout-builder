@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, pipe, switchMap, withLatestFrom } from 'rxjs';
+import { EMPTY, of, pipe, switchMap, withLatestFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { DropPosition } from '../core/models/drop-position';
 import { TemplateElement } from '../core/models/template-element';
@@ -84,6 +84,12 @@ export class BuilderEffects {
                 newElement,
                 insertPosition
               );
+
+              console.log('updatedLayout:');
+              console.log(updatedLayout);
+
+              // Remove ghost on drop
+              updatedLayout = this.removeGhostElement(updatedLayout)!;
             }
 
             return of(BuilderActions.dropSuccess({ updatedLayout }));
@@ -130,5 +136,114 @@ export class BuilderEffects {
     }
 
     return updatedContent;
+  }
+
+  // TODO : DRY !!
+  displayGhost$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BuilderActions.displayGhost),
+      pipe(
+        withLatestFrom(this.builderFacade.currentLayoutItemGhost$),
+        switchMap(
+          ([
+            { parentId, insertPosition },
+            { currentLayout, currentItem, currentGhostInfos },
+          ]) => {
+            if (
+              currentGhostInfos?.parentId === parentId &&
+              currentGhostInfos?.insertPosition === insertPosition
+            ) {
+              // Ghost already exists !
+              console.log('ghost already exists');
+              return EMPTY;
+            }
+
+            let newElement: TemplateElement | null = null;
+
+            if (currentItem) {
+              const builder =
+                this.templateElementBuilderFactory.createElementBuilder(
+                  currentItem.type
+                );
+
+              if (builder) {
+                newElement = builder.getElement();
+                newElement = this.getGhostElement(newElement);
+              }
+            }
+
+            let updatedLayout: TemplateElement | null = {
+              ...currentLayout!,
+            };
+
+            // TODO : rendre plus propre
+            updatedLayout = this.removeGhostElement(updatedLayout);
+            if (!updatedLayout) {
+              return EMPTY;
+            }
+
+            if (newElement) {
+              updatedLayout = this.insertChild(
+                updatedLayout,
+                parentId,
+                newElement,
+                insertPosition
+              );
+            }
+
+            return of(
+              BuilderActions.displayGhostSuccess({
+                updatedLayout,
+                parentId,
+                insertPosition,
+              })
+            );
+          }
+        )
+      )
+    )
+  );
+
+  private getGhostElement(element: TemplateElement): TemplateElement {
+    const updatedElement = {
+      ...element,
+      isGhost: true,
+    };
+
+    if (element.content) {
+      // Reset content
+      updatedElement.content = [];
+
+      element.content.forEach((childElement) => {
+        const updatedChildElement = this.getGhostElement(childElement);
+        updatedElement.content!.push(updatedChildElement);
+      });
+    }
+
+    return updatedElement;
+  }
+
+  private removeGhostElement(element: TemplateElement): TemplateElement | null {
+    if (element.isGhost) {
+      return null;
+    }
+
+    const updatedElement = {
+      ...element,
+    };
+
+    if (element.content) {
+      // Reset content
+      updatedElement.content = [];
+
+      element.content.forEach((childElement) => {
+        const updatedChildElement = this.removeGhostElement(childElement);
+        if (updatedChildElement) {
+          updatedElement.content!.push(updatedChildElement);
+        }
+      });
+    }
+
+    return updatedElement;
   }
 }

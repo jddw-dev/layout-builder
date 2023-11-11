@@ -8,6 +8,7 @@ import {
   selectBuilderCurrentItem,
   selectBuilderCurrentLayout,
   selectBuilderCurrentLayoutAndItem,
+  selectBuilderLayoutItemGhost,
   selectBuilderLayoutToExport,
 } from './builder.selectors';
 
@@ -21,6 +22,9 @@ export class BuilderFacade {
   currentLayoutAndItem$ = this.store.pipe(
     select(selectBuilderCurrentLayoutAndItem)
   );
+  currentLayoutItemGhost$ = this.store.pipe(
+    select(selectBuilderLayoutItemGhost)
+  );
 
   loadLayout(layout: TemplateElement) {
     this.store.dispatch(BuilderActions.loadLayout({ layout }));
@@ -32,5 +36,11 @@ export class BuilderFacade {
 
   drop(parentId: string, insertPosition: DropPosition) {
     this.store.dispatch(BuilderActions.drop({ parentId, insertPosition }));
+  }
+
+  displayGhost(parentId: string, insertPosition: DropPosition) {
+    this.store.dispatch(
+      BuilderActions.displayGhost({ parentId, insertPosition })
+    );
   }
 }

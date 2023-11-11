@@ -75,7 +75,6 @@ import { DEFAULT_LAYOUT } from './default-layout';
       .main-element > *,
       .row-element > *,
       .col-element > * {
-        // display: flex;
         flex-basis: 100%;
       }
     `,

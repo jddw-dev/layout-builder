@@ -2,7 +2,10 @@ import { NgClass, NgSwitch, NgSwitchCase } from '@angular/common';
 import { Component, ElementRef, Input, inject } from '@angular/core';
 import { DragDropModule } from 'primeng/dragdrop';
 import { DropPosition } from '../core/models/drop-position';
-import { TemplateElement } from '../core/models/template-element';
+import {
+  TemplateElement,
+  TemplateElementType,
+} from '../core/models/template-element';
 import { ColElementComponent } from '../layout-elements/col-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
@@ -25,9 +28,8 @@ import { BuilderFacade } from './../+state/builder.facade';
       pDroppable
       (onDrop)="drop($event)"
       (onDragEnter)="dragEnter($event)"
-      (onDragLeave)="dragLeave($event)"
       class="element-wrapper"
-      [ngClass]="{ 'drag-over': hasDragOver }"
+      [ngClass]="{ ghost: element.isGhost }"
       [style]="getStyles()"
     >
       <main-element
@@ -51,6 +53,13 @@ import { BuilderFacade } from './../+state/builder.facade';
       :host {
         position: relative;
       }
+
+      .element-wrapper {
+        .ghost {
+          background: #000000;
+          opacity: 0.3;
+        }
+      }
     `,
   ],
   standalone: true,
@@ -60,8 +69,6 @@ export class TemplateElementPreviewComponent {
 
   private builderFacade = inject(BuilderFacade);
   private elementRef = inject(ElementRef);
-
-  hasDragOver = false;
 
   getStyles(): any {
     const styles: any = {};
@@ -74,8 +81,18 @@ export class TemplateElementPreviewComponent {
   }
 
   drop(event: any) {
+    // Prevent drop on itself
+    if (this.element.isGhost) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
+
+    // Row cannot accept drop
+    if (this.element.type === TemplateElementType.ROW) {
+      return;
+    }
 
     const insertPosition = this.getInsertPosition(event);
 
@@ -98,10 +115,16 @@ export class TemplateElementPreviewComponent {
   }
 
   dragEnter(event: any) {
-    this.hasDragOver = true;
-  }
+    event.preventDefault();
+    event.stopPropagation();
 
-  dragLeave(event: any) {
-    this.hasDragOver = false;
+    if (this.element.isGhost || this.element.type === TemplateElementType.ROW) {
+      return;
+    }
+
+    const insertPosition = this.getInsertPosition(event);
+    if (this.element.id) {
+      this.builderFacade.displayGhost(this.element.id, insertPosition);
+    }
   }
 }
