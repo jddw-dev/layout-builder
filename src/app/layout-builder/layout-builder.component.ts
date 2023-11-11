@@ -38,6 +38,11 @@ import { DEFAULT_LAYOUT } from './default-layout';
   `,
   styles: [
     `
+      // Prevent native Drag&Drop on images
+      img {
+        -webkit-user-drag: none;
+      }
+
       .layout-builder {
         height: 100vh;
       }

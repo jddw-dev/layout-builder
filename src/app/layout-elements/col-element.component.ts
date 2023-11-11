@@ -13,7 +13,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
     DragDropModule,
   ],
   template: `
-    <div class="col-element  element-preview">
+    <div class="col-element element-preview">
       <template-element-preview
         *ngFor="let templateElement of content"
         [element]="templateElement"

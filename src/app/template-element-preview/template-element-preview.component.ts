@@ -28,6 +28,7 @@ import { BuilderFacade } from './../+state/builder.facade';
       (onDragLeave)="dragLeave($event)"
       class="element-wrapper"
       [ngClass]="{ 'drag-over': hasDragOver }"
+      [style]="getStyles()"
     >
       <main-element
         *ngSwitchCase="'main'"
@@ -58,10 +59,19 @@ export class TemplateElementPreviewComponent {
   @Input({ required: true }) element: TemplateElement;
 
   private builderFacade = inject(BuilderFacade);
-
   private elementRef = inject(ElementRef);
 
   hasDragOver = false;
+
+  getStyles(): any {
+    const styles: any = {};
+
+    this.element.styles?.forEach((style) => {
+      styles[style.property] = style.value;
+    });
+
+    return styles;
+  }
 
   drop(event: any) {
     event.preventDefault();

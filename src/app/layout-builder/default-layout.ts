@@ -21,13 +21,11 @@ export const DEFAULT_LAYOUT: TemplateElement = {
             },
           ],
         },
-        { type: TemplateElementType.COLUMN, content: [] },
+        {
+          type: TemplateElementType.COLUMN,
+          content: [],
+        },
       ],
-    },
-
-    {
-      type: TemplateElementType.ROW,
-      content: [],
     },
   ],
 };

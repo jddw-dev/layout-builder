@@ -10,5 +10,5 @@ export interface TemplateElement {
   type: TemplateElementType;
   content?: TemplateElement[];
   displayName?: boolean;
-  styles?: [{ property: string; value: string }];
+  styles?: { property: string; value: string }[];
 }
