@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { DropPosition } from '../core/models/drop-position';
 import { TemplateElement } from '../core/models/template-element';
 import { TemplateElementBuilderFactory } from '../core/template-element-builder-factory/template-element-builder.factory';
+import { TemplateElementItem } from './../core/models/template-element-item';
 import { BuilderActions } from './builder.actions';
 import { BuilderFacade } from './builder.facade';
 
@@ -60,36 +61,16 @@ export class BuilderEffects {
         withLatestFrom(this.builderFacade.currentLayoutAndItem$),
         switchMap(
           ([{ parentId, insertPosition }, { currentLayout, currentItem }]) => {
-            let newElement: TemplateElement | null = null;
+            const updatedLayout = this.buildUpdatedLayout(
+              currentLayout!,
+              currentItem,
+              parentId,
+              insertPosition,
+              false
+            );
 
-            if (currentItem) {
-              const builder =
-                this.templateElementBuilderFactory.createElementBuilder(
-                  currentItem.type
-                );
-
-              if (builder) {
-                newElement = builder.getElement();
-              }
-            }
-
-            let updatedLayout: TemplateElement = {
-              ...currentLayout!,
-            };
-
-            if (newElement) {
-              updatedLayout = this.insertChild(
-                updatedLayout,
-                parentId,
-                newElement,
-                insertPosition
-              );
-
-              console.log('updatedLayout:');
-              console.log(updatedLayout);
-
-              // Remove ghost on drop
-              updatedLayout = this.removeGhostElement(updatedLayout)!;
+            if (!updatedLayout) {
+              return EMPTY;
             }
 
             return of(BuilderActions.dropSuccess({ updatedLayout }));
@@ -138,7 +119,78 @@ export class BuilderEffects {
     return updatedContent;
   }
 
-  // TODO : DRY !!
+  private buildUpdatedLayout(
+    currentLayout: TemplateElement,
+    currentItem: TemplateElementItem | null,
+    parentId: string,
+    insertPosition: DropPosition,
+    isGhost = false
+  ): TemplateElement | null {
+    const newElement = this.getNewElement(currentItem, isGhost);
+
+    const updatedLayout = this.getUpdatedLayout(
+      currentLayout!,
+      newElement,
+      parentId,
+      insertPosition
+    );
+
+    if (!updatedLayout) {
+      console.error('Updated layout could not be built');
+      return null;
+    }
+
+    return updatedLayout;
+  }
+
+  private getNewElement(
+    currentItem: TemplateElementItem | null,
+    isGhost = false
+  ): TemplateElement | null {
+    let newElement: TemplateElement | null = null;
+
+    if (currentItem) {
+      const builder = this.templateElementBuilderFactory.createElementBuilder(
+        currentItem.type
+      );
+
+      if (builder) {
+        newElement = builder.getElement();
+        if (isGhost) {
+          newElement = this.getGhostElement(newElement);
+        }
+      }
+    }
+    return newElement;
+  }
+
+  private getUpdatedLayout(
+    currentLayout: TemplateElement,
+    newElement: TemplateElement | null,
+    parentId: string,
+    insertPosition: DropPosition
+  ): TemplateElement | null {
+    let updatedLayout: TemplateElement | null = {
+      ...currentLayout!,
+    };
+
+    updatedLayout = this.removeGhostElement(updatedLayout);
+    if (!updatedLayout) {
+      return null;
+    }
+
+    if (newElement) {
+      updatedLayout = this.insertChild(
+        updatedLayout,
+        parentId,
+        newElement,
+        insertPosition
+      );
+    }
+
+    return updatedLayout;
+  }
+
   displayGhost$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BuilderActions.displayGhost),
@@ -154,41 +206,20 @@ export class BuilderEffects {
               currentGhostInfos?.insertPosition === insertPosition
             ) {
               // Ghost already exists !
-              console.log('ghost already exists');
               return EMPTY;
             }
 
-            let newElement: TemplateElement | null = null;
+            const updatedLayout = this.buildUpdatedLayout(
+              currentLayout!,
+              currentItem,
+              parentId,
+              insertPosition,
+              true
+            );
 
-            if (currentItem) {
-              const builder =
-                this.templateElementBuilderFactory.createElementBuilder(
-                  currentItem.type
-                );
-
-              if (builder) {
-                newElement = builder.getElement();
-                newElement = this.getGhostElement(newElement);
-              }
-            }
-
-            let updatedLayout: TemplateElement | null = {
-              ...currentLayout!,
-            };
-
-            // TODO : rendre plus propre
-            updatedLayout = this.removeGhostElement(updatedLayout);
+            // If ever ghost is all layout, should not happen in real world
             if (!updatedLayout) {
               return EMPTY;
-            }
-
-            if (newElement) {
-              updatedLayout = this.insertChild(
-                updatedLayout,
-                parentId,
-                newElement,
-                insertPosition
-              );
             }
 
             return of(
