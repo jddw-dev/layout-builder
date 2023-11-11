@@ -84,10 +84,7 @@ export class TemplateElementPreviewComponent {
       y: elementPosition.top + elementPosition.height / 2,
     };
 
-    return {
-      x: dropPosition.x > center.x ? 'right' : 'left',
-      y: dropPosition.y > center.y ? 'bottom' : 'top',
-    };
+    return dropPosition.y < center.y ? DropPosition.TOP : DropPosition.BOTTOM;
   }
 
   dragEnter(event: any) {

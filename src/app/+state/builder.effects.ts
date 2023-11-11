@@ -3,10 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, pipe, switchMap, withLatestFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { DropPosition } from '../core/models/drop-position';
-import {
-  TemplateElement,
-  TemplateElementType,
-} from '../core/models/template-element';
+import { TemplateElement } from '../core/models/template-element';
 import { TemplateElementBuilderFactory } from '../core/template-element-builder-factory/template-element-builder.factory';
 import { BuilderActions } from './builder.actions';
 import { BuilderFacade } from './builder.facade';
@@ -100,7 +97,7 @@ export class BuilderEffects {
     content: TemplateElement,
     parentId: string,
     childToInsert: TemplateElement,
-    insertPosition: DropPosition = { x: 'right', y: 'bottom' }
+    insertPosition: DropPosition = DropPosition.BOTTOM
   ) {
     const updatedContent: TemplateElement = { ...content, content: [] };
     if (content.content) {
@@ -114,20 +111,10 @@ export class BuilderEffects {
         updatedContent.content = [];
       }
 
-      // TODO : rendre plus propre et surtout EXTENSIBLE !!
-      // Là il faudrait rajouter des conditions à chaque nouveau type
-      if (updatedContent.type === TemplateElementType.COLUMN) {
-        if (insertPosition.x === 'left') {
-          updatedContent.content = [childToInsert, ...updatedContent.content];
-        } else {
-          updatedContent.content = [...updatedContent.content, childToInsert];
-        }
+      if (insertPosition === DropPosition.TOP) {
+        updatedContent.content = [childToInsert, ...updatedContent.content];
       } else {
-        if (insertPosition.y === 'top') {
-          updatedContent.content = [childToInsert, ...updatedContent.content];
-        } else {
-          updatedContent.content = [...updatedContent.content, childToInsert];
-        }
+        updatedContent.content = [...updatedContent.content, childToInsert];
       }
     } else {
       const updatedChildren: TemplateElement[] = [];
