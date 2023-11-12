@@ -1,11 +1,9 @@
 import {
   Component,
-  DestroyRef,
   EventEmitter,
   Input,
-  OnInit,
+  OnChanges,
   Output,
-  inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from 'primeng/colorpicker';
@@ -35,15 +33,13 @@ import { ColorPickerModule } from 'primeng/colorpicker';
   `,
   styles: [],
 })
-export class ContainersFormComponent implements OnInit {
-  private destroy: DestroyRef = inject(DestroyRef);
-
+export class ContainersFormComponent implements OnChanges {
   @Input() styles?: { property: string; value: string }[];
   @Output() optionsSaved: EventEmitter<any> = new EventEmitter<any>();
 
   backgroundColor?: string;
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.backgroundColor =
       this.styles?.find((style) => style.property === 'backgroundColor')
         ?.value ?? '';
