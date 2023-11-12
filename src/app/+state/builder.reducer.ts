@@ -14,6 +14,7 @@ export interface BuilderState {
   currentItem: TemplateElementItem | null;
   isDragging: boolean;
   currentGhostInfos: GhostInfos | null;
+  selectedElement: TemplateElement | null;
 }
 
 const initialState: BuilderState = {
@@ -21,6 +22,7 @@ const initialState: BuilderState = {
   currentItem: null,
   isDragging: false,
   currentGhostInfos: null,
+  selectedElement: null,
 };
 
 export const builderReducer = createReducer(
@@ -49,6 +51,22 @@ export const builderReducer = createReducer(
         parentId,
         insertAfterId,
       },
+    })
+  ),
+  on(BuilderActions.selectElement, (state, { element }) => ({
+    ...state,
+    selectedElement: element,
+  })),
+  on(BuilderActions.removeSelectedElement, (state) => ({
+    ...state,
+    selectedElement: null,
+  })),
+  on(
+    BuilderActions.updateElementSuccess,
+    (state, { updatedLayout, element }) => ({
+      ...state,
+      currentLayout: updatedLayout,
+      selectedElement: element,
     })
   )
 );

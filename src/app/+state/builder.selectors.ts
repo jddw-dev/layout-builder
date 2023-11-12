@@ -14,14 +14,19 @@ export const selectBuilderLayoutToExport = createSelector(
   selectBuilderState,
   (state: BuilderState) =>
     state.currentLayout
-      ? getTemplateElementWithoutId(state.currentLayout)
+      ? getTemplateElementWithoutUtilProperties(state.currentLayout)
       : null
 );
 
-const getTemplateElementWithoutId = (templateElement: TemplateElement) => {
+// TODO : LayoutIdManager should be responsible
+// So export has to be done in the facade / or in effects
+const getTemplateElementWithoutUtilProperties = (
+  templateElement: TemplateElement
+) => {
   const updatedElement = {
     ...templateElement,
     id: undefined,
+    acceptDrop: undefined,
   };
 
   if (templateElement.content) {
@@ -29,7 +34,8 @@ const getTemplateElementWithoutId = (templateElement: TemplateElement) => {
     updatedElement.content = [];
 
     templateElement.content.forEach((element) => {
-      const updatedChildElement = getTemplateElementWithoutId(element);
+      const updatedChildElement =
+        getTemplateElementWithoutUtilProperties(element);
       updatedElement.content!.push(updatedChildElement);
     });
   }
@@ -57,4 +63,9 @@ export const selectBuilderLayoutItemGhost = createSelector(
     currentItem: state.currentItem,
     currentGhostInfos: state.currentGhostInfos,
   })
+);
+
+export const selectBuilderSelectedElement = createSelector(
+  selectBuilderState,
+  (state: BuilderState) => state.selectedElement
 );

@@ -129,4 +129,30 @@ export class BuilderEffects {
       )
     )
   );
+
+  updateElement$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BuilderActions.updateElement),
+      pipe(
+        withLatestFrom(this.builderFacade.currentLayout$),
+        switchMap(([{ element }, currentLayout]) => {
+          if (!currentLayout) {
+            return EMPTY;
+          }
+
+          const updatedLayout = this.layoutBuilderService.updateElement(
+            currentLayout,
+            element
+          );
+
+          return of(
+            BuilderActions.updateElementSuccess({
+              updatedLayout: updatedLayout,
+              element: element,
+            })
+          );
+        })
+      )
+    )
+  );
 }

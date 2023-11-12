@@ -1,6 +1,8 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgClass, NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import { LetDirective } from '@ngrx/component';
 import { BuilderFacade } from '../+state/builder.facade';
+import { LayoutOptionsComponent } from '../layout-options/layout-options.component';
 import { LayoutPreviewComponent } from '../layout-preview/layout-preview.component';
 import { TemplateElementsListComponent } from './../template-elements-list/template-elements-list.component';
 import { DEFAULT_LAYOUT } from './default-layout';
@@ -11,8 +13,12 @@ import { DEFAULT_LAYOUT } from './default-layout';
   imports: [
     TemplateElementsListComponent,
     LayoutPreviewComponent,
+    LayoutOptionsComponent,
     AsyncPipe,
     JsonPipe,
+    NgIf,
+    NgClass,
+    LetDirective,
   ],
   template: `
     <div class="container-fluid">
@@ -21,7 +27,11 @@ import { DEFAULT_LAYOUT } from './default-layout';
           <template-elements-list></template-elements-list>
         </div>
 
-        <div class="layout-builder__main-content col-6 col-md-9">
+        <div
+          *ngrxLet="selectedElement$ as selectedElement"
+          class="layout-builder__main-content"
+          [ngClass]="selectedElement ? 'col-6 col-md-8' : 'col-8 col-md-10'"
+        >
           <layout-preview></layout-preview>
 
           <div style="margin-top: 20px;">
@@ -30,8 +40,11 @@ import { DEFAULT_LAYOUT } from './default-layout';
           </div>
         </div>
 
-        <div class="layout-builder__options col-2 col-md-1">
-          <h2 class="text-center">Options</h2>
+        <div
+          *ngIf="selectedElement$ | async as selectedElement"
+          class="layout-builder__options col-2 col-md-2"
+        >
+          <layout-options [selectedElement]="selectedElement"></layout-options>
         </div>
       </div>
     </div>
@@ -83,6 +96,8 @@ import { DEFAULT_LAYOUT } from './default-layout';
 })
 export class LayoutBuilderComponent implements OnInit {
   builderFacade = inject(BuilderFacade);
+
+  selectedElement$ = this.builderFacade.selectedElement$;
 
   ngOnInit(): void {
     this.builderFacade.loadLayout(DEFAULT_LAYOUT);
