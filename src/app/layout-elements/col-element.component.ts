@@ -1,17 +1,12 @@
-import { CommonModule } from '@angular/common';
+import { NgFor } from '@angular/common';
 import { Component, Input, forwardRef } from '@angular/core';
-import { DragDropModule } from 'primeng/dragdrop';
 import { TemplateElement } from '../core/models/template-element';
 import { TemplateElementPreviewComponent } from '../template-element-preview/template-element-preview.component';
 
 @Component({
   selector: 'col-element',
   standalone: true,
-  imports: [
-    CommonModule,
-    forwardRef(() => TemplateElementPreviewComponent),
-    DragDropModule,
-  ],
+  imports: [NgFor, forwardRef(() => TemplateElementPreviewComponent)],
   template: `
     <div class="col-element element-preview">
       <template-element-preview

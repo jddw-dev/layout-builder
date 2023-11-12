@@ -9,6 +9,8 @@ import {
 import { ColElementComponent } from '../layout-elements/col-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
+import { TextElementComponent } from '../layout-elements/text-element.component';
+import { TitleElementComponent } from '../layout-elements/title-element.component';
 import { BuilderFacade } from './../+state/builder.facade';
 
 @Component({
@@ -16,6 +18,8 @@ import { BuilderFacade } from './../+state/builder.facade';
     MainElementComponent,
     RowElementComponent,
     ColElementComponent,
+    TitleElementComponent,
+    TextElementComponent,
     DragDropModule,
     NgClass,
     NgSwitch,
@@ -47,6 +51,13 @@ import { BuilderFacade } from './../+state/builder.facade';
         *ngSwitchCase="'column'"
         [content]="element.content"
       ></col-element>
+
+      <title-element
+        *ngSwitchCase="'title'"
+        [title]="element.title"
+      ></title-element>
+
+      <text-element *ngSwitchCase="'text'" [text]="element.text"></text-element>
     </div>
   `,
   styles: [

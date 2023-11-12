@@ -3,7 +3,10 @@ export enum TemplateElementType {
   ROW = 'row',
   COLUMN = 'column',
   SHEET = 'sheet',
-  HIDDEN = 'hidden',
+  TITLE = 'title',
+  TEXT = 'text',
+  TAB = 'tab',
+  DIVIDER = 'divider',
 }
 
 export interface TemplateElement {
@@ -16,4 +19,6 @@ export interface TemplateElement {
   content?: TemplateElement[];
   displayName?: boolean;
   styles?: { property: string; value: string }[];
+  title?: string;
+  text?: string;
 }
