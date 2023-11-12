@@ -18,6 +18,8 @@ export const selectBuilderLayoutToExport = createSelector(
       : null
 );
 
+// TODO : LayoutIdManager should be responsible
+// So export has to be done in the facade / or in effects
 const getTemplateElementWithoutId = (templateElement: TemplateElement) => {
   const updatedElement = {
     ...templateElement,
@@ -57,4 +59,9 @@ export const selectBuilderLayoutItemGhost = createSelector(
     currentItem: state.currentItem,
     currentGhostInfos: state.currentGhostInfos,
   })
+);
+
+export const selectBuilderSelectedElement = createSelector(
+  selectBuilderState,
+  (state: BuilderState) => state.selectedElement
 );

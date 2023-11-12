@@ -9,6 +9,7 @@ import {
   selectBuilderCurrentLayoutAndItem,
   selectBuilderLayoutItemGhost,
   selectBuilderLayoutToExport,
+  selectBuilderSelectedElement,
 } from './builder.selectors';
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +25,7 @@ export class BuilderFacade {
   currentLayoutItemGhost$ = this.store.pipe(
     select(selectBuilderLayoutItemGhost)
   );
+  selectedItem$ = this.store.pipe(select(selectBuilderSelectedElement));
 
   loadLayout(layout: TemplateElement) {
     this.store.dispatch(BuilderActions.loadLayout({ layout }));
