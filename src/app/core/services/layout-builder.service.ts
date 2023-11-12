@@ -157,4 +157,29 @@ export class LayoutBuilderService {
 
     return updatedContent;
   }
+
+  updateElement(
+    parentElement: TemplateElement,
+    elementToUpdate: TemplateElement
+  ): TemplateElement {
+    let updatedElement: TemplateElement = { ...parentElement };
+
+    if (updatedElement.id === elementToUpdate.id) {
+      // We found the right element
+      updatedElement = { ...elementToUpdate };
+    } else {
+      // Update in children
+      const updatedChildren: TemplateElement[] = [];
+
+      if (updatedElement.content) {
+        for (const child of updatedElement.content) {
+          updatedChildren.push(this.updateElement(child, elementToUpdate));
+        }
+      }
+
+      updatedElement.content = updatedChildren;
+    }
+
+    return updatedElement;
+  }
 }

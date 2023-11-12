@@ -56,4 +56,8 @@ export class BuilderFacade {
   removeSelectedElement() {
     this.store.dispatch(BuilderActions.removeSelectedElement());
   }
+
+  updateElement(element: TemplateElement) {
+    this.store.dispatch(BuilderActions.updateElement({ element }));
+  }
 }

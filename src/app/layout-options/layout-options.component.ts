@@ -12,6 +12,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { TemplateElement } from '../core/models/template-element';
+import { BuilderFacade } from './../+state/builder.facade';
 
 @Component({
   standalone: true,
@@ -36,6 +37,7 @@ export class LayoutOptionsComponent implements OnChanges {
   @Input({ required: true }) selectedElement: TemplateElement;
 
   private formBuilder = inject(FormBuilder);
+  private builderFacade = inject(BuilderFacade);
 
   form!: FormGroup;
 
@@ -50,6 +52,10 @@ export class LayoutOptionsComponent implements OnChanges {
   }
 
   submit(): void {
-    console.log('submit');
+    // TODO : extends to all options
+    this.builderFacade.updateElement({
+      ...this.selectedElement,
+      title: this.form.value.title,
+    });
   }
 }
