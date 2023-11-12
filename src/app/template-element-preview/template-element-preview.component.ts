@@ -1,7 +1,6 @@
 import { NgClass, NgSwitch, NgSwitchCase } from '@angular/common';
 import { Component, ElementRef, Input, inject } from '@angular/core';
 import { DragDropModule } from 'primeng/dragdrop';
-import { DropPosition } from '../core/models/drop-position';
 import {
   TemplateElement,
   TemplateElementType,
@@ -113,20 +112,6 @@ export class TemplateElementPreviewComponent {
     if (this.element.id) {
       this.builderFacade.drop(this.element.id, insertAfterId);
     }
-  }
-
-  // TODO : remove ?
-  private getInsertPosition(event: any): DropPosition {
-    const dropPosition = { x: event.clientX, y: event.clientY };
-    const elementPosition =
-      this.elementRef.nativeElement.getBoundingClientRect();
-
-    const center = {
-      x: elementPosition.left + elementPosition.width / 2,
-      y: elementPosition.top + elementPosition.height / 2,
-    };
-
-    return dropPosition.y < center.y ? DropPosition.TOP : DropPosition.BOTTOM;
   }
 
   private getInsertAfterId(event: any): string | null {
