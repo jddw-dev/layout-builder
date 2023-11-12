@@ -7,7 +7,6 @@ import {
   TemplateElementType,
 } from '../core/models/template-element';
 import { ColElementComponent } from '../layout-elements/col-element.component';
-import { HiddenElementComponent } from '../layout-elements/hidden-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
 import { BuilderFacade } from './../+state/builder.facade';
@@ -17,7 +16,6 @@ import { BuilderFacade } from './../+state/builder.facade';
     MainElementComponent,
     RowElementComponent,
     ColElementComponent,
-    HiddenElementComponent,
     DragDropModule,
     NgClass,
     NgSwitch,
@@ -49,8 +47,6 @@ import { BuilderFacade } from './../+state/builder.facade';
         *ngSwitchCase="'column'"
         [content]="element.content"
       ></col-element>
-
-      <hidden-element *ngSwitchCase="'hidden'"></hidden-element>
     </div>
   `,
   styles: [

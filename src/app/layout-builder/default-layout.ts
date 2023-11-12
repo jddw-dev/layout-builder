@@ -28,11 +28,6 @@ export const DEFAULT_LAYOUT: TemplateElement = {
       ],
     },
 
-    // {
-    //   type: TemplateElementType.HIDDEN,
-    //   content: [],
-    // },
-
     {
       type: TemplateElementType.ROW,
       content: [
