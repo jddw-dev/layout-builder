@@ -2,12 +2,18 @@ import { NgSwitch, NgSwitchCase } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { TemplateElement } from '../core/models/template-element';
 import { BuilderFacade } from './../+state/builder.facade';
+import { TextOptionsFormComponent } from './forms/text-options-form.component';
 import { TitleOptionsFormComponent } from './forms/title-options-form.component';
 
 @Component({
   standalone: true,
   selector: 'layout-options',
-  imports: [TitleOptionsFormComponent, NgSwitch, NgSwitchCase],
+  imports: [
+    TitleOptionsFormComponent,
+    TextOptionsFormComponent,
+    NgSwitch,
+    NgSwitchCase,
+  ],
   template: `
     <h2 class="text-center">Options</h2>
     <h3 class="text-center">{{ selectedElement.type }}</h3>
@@ -18,6 +24,12 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
         [title]="selectedElement.title!"
         (optionsSaved)="saveOptions($event)"
       ></title-options-form>
+
+      <text-options-form
+        *ngSwitchCase="'text'"
+        [text]="selectedElement.text!"
+        (optionsSaved)="saveOptions($event)"
+      ></text-options-form>
     </div>
   `,
   styles: [],
