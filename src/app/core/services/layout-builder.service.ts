@@ -1,45 +1,16 @@
 import { inject, Injectable } from '@angular/core';
-import { v4 as uuidv4 } from 'uuid';
 import { InsertPosition } from '../models/insert-position';
 import { TemplateElement } from '../models/template-element';
 import { TemplateElementItem } from '../models/template-element-item';
 import { TemplateElementBuilderFactory } from '../template-element-builder-factory/template-element-builder.factory';
 
+/**
+ * This service is used to manage layout updates
+ * Responsible for inserting and removing elements into layout
+ */
 @Injectable({ providedIn: 'root' })
 export class LayoutBuilderService {
   private templateElementBuilderFactory = inject(TemplateElementBuilderFactory);
-
-  /**
-   * This method is used to generate ID for each layout element
-   * Id is then used to know where the drop happened
-   * Also generate IDs for each element's children
-   *
-   * @param element Element to generate ID for
-   * @returns Element with ID and children with IDs
-   */
-  generateId(element: TemplateElement): TemplateElement {
-    const updatedElement: TemplateElement = { ...element };
-
-    if (!updatedElement.id) {
-      updatedElement.id = uuidv4();
-    }
-
-    updatedElement.content = this.generateIdsForChildren(updatedElement);
-
-    return updatedElement;
-  }
-
-  private generateIdsForChildren(element: TemplateElement): TemplateElement[] {
-    const updatedContent: TemplateElement[] = [];
-
-    if (element.content) {
-      for (const child of element.content) {
-        updatedContent.push(this.generateId(child));
-      }
-    }
-
-    return updatedContent;
-  }
 
   /**
    * Creates TemplateElement from TemplateElementItem

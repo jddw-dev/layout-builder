@@ -2,14 +2,18 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, of, pipe, switchMap, withLatestFrom } from 'rxjs';
 import { LayoutBuilderService } from '../core/services/layout-builder.service';
+import { LayoutIdManagerService } from '../core/services/layout-id-manager.service';
 import { BuilderActions } from './builder.actions';
 import { BuilderFacade } from './builder.facade';
 
 @Injectable({ providedIn: 'root' })
 export class BuilderEffects {
   private actions$ = inject(Actions);
-  private builderFacade = inject(BuilderFacade);
+
   private layoutBuilderService = inject(LayoutBuilderService);
+  private layoutIdManagerService = inject(LayoutIdManagerService);
+
+  private builderFacade = inject(BuilderFacade);
 
   /**
    * This effect is used to generate ID for each layout element
@@ -19,7 +23,7 @@ export class BuilderEffects {
     this.actions$.pipe(
       ofType(BuilderActions.loadLayout),
       switchMap(({ layout }) => {
-        const updatedLayout = this.layoutBuilderService.generateId(layout);
+        const updatedLayout = this.layoutIdManagerService.generateId(layout);
 
         return of(BuilderActions.loadLayoutSuccess({ layout: updatedLayout }));
       })
