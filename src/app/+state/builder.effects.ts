@@ -33,16 +33,16 @@ export class BuilderEffects {
         withLatestFrom(this.builderFacade.currentLayoutAndItem$),
         switchMap(
           ([{ parentId, insertAfterId }, { currentLayout, currentItem }]) => {
+            if (!currentLayout || !currentItem) {
+              return EMPTY;
+            }
+
             const updatedLayout = this.layoutBuilderService.buildUpdatedLayout(
-              currentLayout!,
+              currentLayout,
               currentItem,
               { parentId, insertAfterId },
               false
             );
-
-            if (!updatedLayout) {
-              return EMPTY;
-            }
 
             return of(BuilderActions.dropSuccess({ updatedLayout }));
           }
@@ -61,6 +61,10 @@ export class BuilderEffects {
             { parentId, insertAfterId },
             { currentLayout, currentItem, currentGhostInfos },
           ]) => {
+            if (!currentLayout || !currentItem) {
+              return EMPTY;
+            }
+
             if (
               currentGhostInfos?.parentId === parentId &&
               currentGhostInfos?.insertAfterId === insertAfterId
@@ -70,16 +74,11 @@ export class BuilderEffects {
             }
 
             const updatedLayout = this.layoutBuilderService.buildUpdatedLayout(
-              currentLayout!,
+              currentLayout,
               currentItem,
               { parentId, insertAfterId },
               true
             );
-
-            // If ever ghost is all layout, should not happen in real world
-            if (!updatedLayout) {
-              return EMPTY;
-            }
 
             return of(
               BuilderActions.displayGhostSuccess({
