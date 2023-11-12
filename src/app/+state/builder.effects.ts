@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, of, pipe, switchMap, withLatestFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
-import { DropPosition } from '../core/models/drop-position';
 import { TemplateElement } from '../core/models/template-element';
 import { TemplateElementBuilderFactory } from '../core/template-element-builder-factory/template-element-builder.factory';
 import { TemplateElementItem } from './../core/models/template-element-item';
@@ -60,12 +59,12 @@ export class BuilderEffects {
       pipe(
         withLatestFrom(this.builderFacade.currentLayoutAndItem$),
         switchMap(
-          ([{ parentId, insertPosition }, { currentLayout, currentItem }]) => {
+          ([{ parentId, insertAfterId }, { currentLayout, currentItem }]) => {
             const updatedLayout = this.buildUpdatedLayout(
               currentLayout!,
               currentItem,
               parentId,
-              insertPosition,
+              insertAfterId,
               false
             );
 
@@ -84,8 +83,12 @@ export class BuilderEffects {
     content: TemplateElement,
     parentId: string,
     childToInsert: TemplateElement,
-    insertPosition: DropPosition = DropPosition.BOTTOM
+    insertAfterId: string | null = null
   ) {
+    console.log('InsertChild:');
+    console.log(`parentId: ${parentId}`);
+    console.log(`insertAfterId: ${insertAfterId}`);
+
     const updatedContent: TemplateElement = { ...content, content: [] };
     if (content.content) {
       updatedContent.content = [...content.content];
@@ -98,10 +101,21 @@ export class BuilderEffects {
         updatedContent.content = [];
       }
 
-      if (insertPosition === DropPosition.TOP) {
+      if (insertAfterId === null) {
+        // Insert top
         updatedContent.content = [childToInsert, ...updatedContent.content];
       } else {
-        updatedContent.content = [...updatedContent.content, childToInsert];
+        // Insert bottom
+        const insertAfterIndex = updatedContent.content.findIndex(
+          (child) => child.id === insertAfterId
+        );
+
+        if (insertAfterIndex === -1) {
+          console.error('Insert after id not found');
+          return updatedContent;
+        }
+
+        updatedContent.content.splice(insertAfterIndex + 1, 0, childToInsert);
       }
     } else {
       const updatedChildren: TemplateElement[] = [];
@@ -123,7 +137,7 @@ export class BuilderEffects {
     currentLayout: TemplateElement,
     currentItem: TemplateElementItem | null,
     parentId: string,
-    insertPosition: DropPosition,
+    insertAfterId: string | null,
     isGhost = false
   ): TemplateElement | null {
     const newElement = this.getNewElement(currentItem, isGhost);
@@ -132,7 +146,7 @@ export class BuilderEffects {
       currentLayout!,
       newElement,
       parentId,
-      insertPosition
+      insertAfterId
     );
 
     if (!updatedLayout) {
@@ -168,7 +182,7 @@ export class BuilderEffects {
     currentLayout: TemplateElement,
     newElement: TemplateElement | null,
     parentId: string,
-    insertPosition: DropPosition
+    insertAfterId: string | null
   ): TemplateElement | null {
     let updatedLayout: TemplateElement | null = {
       ...currentLayout!,
@@ -184,7 +198,7 @@ export class BuilderEffects {
         updatedLayout,
         parentId,
         newElement,
-        insertPosition
+        insertAfterId
       );
     }
 
@@ -198,14 +212,18 @@ export class BuilderEffects {
         withLatestFrom(this.builderFacade.currentLayoutItemGhost$),
         switchMap(
           ([
-            { parentId, insertPosition },
+            { parentId, insertAfterId },
             { currentLayout, currentItem, currentGhostInfos },
           ]) => {
+            console.log('EFFECT displayGhost$');
+            console.log(`${parentId} - ${insertAfterId}`);
+
             if (
               currentGhostInfos?.parentId === parentId &&
-              currentGhostInfos?.insertPosition === insertPosition
+              currentGhostInfos?.insertAfterId === insertAfterId
             ) {
               // Ghost already exists !
+              console.log('already exists');
               return EMPTY;
             }
 
@@ -213,7 +231,7 @@ export class BuilderEffects {
               currentLayout!,
               currentItem,
               parentId,
-              insertPosition,
+              insertAfterId,
               true
             );
 
@@ -226,7 +244,7 @@ export class BuilderEffects {
               BuilderActions.displayGhostSuccess({
                 updatedLayout,
                 parentId,
-                insertPosition,
+                insertAfterId,
               })
             );
           }

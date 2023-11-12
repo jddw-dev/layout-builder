@@ -7,6 +7,7 @@ import {
   TemplateElementType,
 } from '../core/models/template-element';
 import { ColElementComponent } from '../layout-elements/col-element.component';
+import { HiddenElementComponent } from '../layout-elements/hidden-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
 import { BuilderFacade } from './../+state/builder.facade';
@@ -16,6 +17,7 @@ import { BuilderFacade } from './../+state/builder.facade';
     MainElementComponent,
     RowElementComponent,
     ColElementComponent,
+    HiddenElementComponent,
     DragDropModule,
     NgClass,
     NgSwitch,
@@ -24,6 +26,7 @@ import { BuilderFacade } from './../+state/builder.facade';
   selector: 'template-element-preview',
   template: `
     <div
+      [id]="element.id"
       [ngSwitch]="element.type"
       pDroppable
       (onDrop)="drop($event)"
@@ -46,6 +49,8 @@ import { BuilderFacade } from './../+state/builder.facade';
         *ngSwitchCase="'column'"
         [content]="element.content"
       ></col-element>
+
+      <hidden-element *ngSwitchCase="'hidden'"></hidden-element>
     </div>
   `,
   styles: [
@@ -94,13 +99,14 @@ export class TemplateElementPreviewComponent {
       return;
     }
 
-    const insertPosition = this.getInsertPosition(event);
+    const insertAfterId = this.getInsertAfterId(event);
 
     if (this.element.id) {
-      this.builderFacade.drop(this.element.id, insertPosition);
+      this.builderFacade.drop(this.element.id, insertAfterId);
     }
   }
 
+  // TODO : remove ?
   private getInsertPosition(event: any): DropPosition {
     const dropPosition = { x: event.clientX, y: event.clientY };
     const elementPosition =
@@ -114,17 +120,51 @@ export class TemplateElementPreviewComponent {
     return dropPosition.y < center.y ? DropPosition.TOP : DropPosition.BOTTOM;
   }
 
+  private getInsertAfterId(event: any): string | null {
+    const dropPosition = { x: event.clientX, y: event.clientY };
+
+    // Get element children
+    const children =
+      this.elementRef.nativeElement.children[0]?.children[0]?.children[0]
+        ?.children;
+
+    let insertAfterId: string | null = null;
+    if (children) {
+      for (const child of children) {
+        const childElement = child.children[0];
+        if (childElement.className.includes('ghost')) {
+          // Ignore ghost element
+          continue;
+        }
+
+        const childId = childElement.id;
+        const childPosition = childElement.getBoundingClientRect();
+
+        if (childPosition.bottom <= dropPosition.y) {
+          insertAfterId = childId;
+        }
+      }
+    }
+
+    return insertAfterId;
+  }
+
   dragEnter(event: any) {
     event.preventDefault();
     event.stopPropagation();
+
+    console.log(`dragEnter: ${this.element.type}`);
 
     if (this.element.isGhost || this.element.type === TemplateElementType.ROW) {
       return;
     }
 
-    const insertPosition = this.getInsertPosition(event);
+    const insertAfterId = this.getInsertAfterId(event);
+    console.log(`insertAfterId: ${insertAfterId}`);
     if (this.element.id) {
-      this.builderFacade.displayGhost(this.element.id, insertPosition);
+      console.log('displayGhost');
+      console.log(`${this.element.id} - ${insertAfterId}`);
+      this.builderFacade.displayGhost(this.element.id, insertAfterId);
     }
   }
 }

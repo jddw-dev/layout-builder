@@ -1,5 +1,4 @@
 import { createActionGroup, props } from '@ngrx/store';
-import { DropPosition } from '../core/models/drop-position';
 import { TemplateElementItem } from '../core/models/template-element-item';
 import { TemplateElement } from './../core/models/template-element';
 
@@ -12,14 +11,14 @@ export const BuilderActions = createActionGroup({
     'Drag End': props<{ element: TemplateElementItem }>(),
     'Display Ghost': props<{
       parentId: string;
-      insertPosition: DropPosition;
+      insertAfterId: string | null;
     }>(),
     'Display Ghost Success': props<{
       updatedLayout: TemplateElement;
       parentId: string;
-      insertPosition: DropPosition;
+      insertAfterId: string | null;
     }>(),
-    Drop: props<{ parentId: string; insertPosition: DropPosition }>(),
+    Drop: props<{ parentId: string; insertAfterId: string | null }>(),
     'Drop Success': props<{ updatedLayout: TemplateElement }>(),
   },
 });

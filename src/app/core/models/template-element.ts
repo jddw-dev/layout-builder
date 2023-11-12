@@ -3,6 +3,7 @@ export enum TemplateElementType {
   ROW = 'row',
   COLUMN = 'column',
   SHEET = 'sheet',
+  HIDDEN = 'hidden',
 }
 
 export interface TemplateElement {

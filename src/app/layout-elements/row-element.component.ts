@@ -28,7 +28,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
         border-radius: 8px;
 
         display: flex;
-        margin: 10px 0;
+        margin: 50px 0;
       }
     `,
   ],

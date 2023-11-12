@@ -1,5 +1,4 @@
 import { createReducer, on } from '@ngrx/store';
-import { DropPosition } from '../core/models/drop-position';
 import { TemplateElement } from '../core/models/template-element';
 import { TemplateElementItem } from '../core/models/template-element-item';
 import { BuilderActions } from './builder.actions';
@@ -7,7 +6,7 @@ import { BuilderActions } from './builder.actions';
 // TODO : vers autre fichier ?!
 export interface GhostInfos {
   parentId: string;
-  insertPosition: DropPosition;
+  insertAfterId: string | null;
 }
 
 export interface BuilderState {
@@ -43,10 +42,13 @@ export const builderReducer = createReducer(
   on(BuilderActions.dragEnd, (state) => ({ ...initialState })),
   on(
     BuilderActions.displayGhostSuccess,
-    (state, { updatedLayout, parentId, insertPosition }) => ({
+    (state, { updatedLayout, parentId, insertAfterId }) => ({
       ...state,
       currentLayout: updatedLayout,
-      currentGhostInfos: { parentId, insertPosition },
+      currentGhostInfos: {
+        parentId,
+        insertAfterId,
+      },
     })
   )
 );
