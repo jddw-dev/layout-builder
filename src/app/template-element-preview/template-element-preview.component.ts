@@ -167,6 +167,7 @@ export class TemplateElementPreviewComponent {
     }
   }
 
+  // TODO : unselect element when click outside !
   click(event: any) {
     event.preventDefault();
     event.stopPropagation();

@@ -1,61 +1,44 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  inject,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { NgSwitch, NgSwitchCase } from '@angular/common';
+import { Component, Input, inject } from '@angular/core';
 import { TemplateElement } from '../core/models/template-element';
 import { BuilderFacade } from './../+state/builder.facade';
+import { TitleOptionsFormComponent } from './forms/title-options-form.component';
 
 @Component({
   standalone: true,
   selector: 'layout-options',
-  imports: [ReactiveFormsModule],
+  imports: [TitleOptionsFormComponent, NgSwitch, NgSwitchCase],
   template: `
     <h2 class="text-center">Options</h2>
     <h3 class="text-center">{{ selectedElement.type }}</h3>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <div class="mb-3">
-        <label>Title</label>
-        <input type="text" formControlName="title" />
-      </div>
-
-      <button class="btn btn-primary" type="submit">Save</button>
-    </form>
+    <div [ngSwitch]="selectedElement.type">
+      <title-options-form
+        *ngSwitchCase="'title'"
+        [title]="selectedElement.title!"
+        (optionsSaved)="saveOptions($event)"
+      ></title-options-form>
+    </div>
   `,
   styles: [],
 })
-export class LayoutOptionsComponent implements OnChanges {
+export class LayoutOptionsComponent {
   @Input({ required: true }) selectedElement: TemplateElement;
 
-  private formBuilder = inject(FormBuilder);
   private builderFacade = inject(BuilderFacade);
 
-  form!: FormGroup;
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.initForm();
-  }
-
-  private initForm(): void {
-    this.form = this.formBuilder.group({
-      title: new FormControl(this.selectedElement.title),
-    });
-  }
-
-  submit(): void {
+  saveOptions(options: any): void {
     // TODO : extends to all options
+    /**
+     * Créer des composants form pour chaque type d'élément (avec les bonnes options)
+     * et les afficher en fonction du type d'élément sélectionné
+     *
+     * Les composants ont un output qui renvoie l'ensemble des options sous forme de clés / values
+     * Il n'y a plus alors qu'à build l'élémement mis à jour
+     */
     this.builderFacade.updateElement({
       ...this.selectedElement,
-      title: this.form.value.title,
+      ...options,
     });
   }
 }
