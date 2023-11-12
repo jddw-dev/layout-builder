@@ -67,6 +67,8 @@ import { BuilderFacade } from './../+state/builder.facade';
       }
 
       .element-wrapper {
+        cursor: pointer;
+
         .ghost {
           background: #000000;
           opacity: 0.3;
