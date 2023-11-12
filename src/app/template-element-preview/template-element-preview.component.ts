@@ -1,5 +1,6 @@
 import { NgClass, NgSwitch, NgSwitchCase } from '@angular/common';
 import { Component, ElementRef, Input, inject } from '@angular/core';
+import { LetDirective } from '@ngrx/component';
 import { DragDropModule } from 'primeng/dragdrop';
 import { TemplateElement } from '../core/models/template-element';
 import { ColElementComponent } from '../layout-elements/col-element.component';
@@ -20,18 +21,24 @@ import { BuilderFacade } from './../+state/builder.facade';
     NgClass,
     NgSwitch,
     NgSwitchCase,
+    LetDirective,
   ],
   selector: 'template-element-preview',
   template: `
     <div
+      *ngrxLet="selectedElement$ as selectedElement"
       [id]="element.id"
       [ngSwitch]="element.type"
       pDroppable
+      class="element-wrapper"
+      [ngClass]="{
+        ghost: element.isGhost,
+        selected: selectedElement?.id === element.id
+      }"
+      [style]="getStyles()"
       (onDrop)="drop($event)"
       (onDragEnter)="dragEnter($event)"
-      class="element-wrapper"
-      [ngClass]="{ ghost: element.isGhost }"
-      [style]="getStyles()"
+      (click)="click($event)"
     >
       <main-element
         *ngSwitchCase="'main'"
@@ -65,6 +72,10 @@ import { BuilderFacade } from './../+state/builder.facade';
       .element-wrapper {
         cursor: pointer;
 
+        .selected {
+          background: rgba(0, 255, 0, 0.5);
+        }
+
         .ghost {
           background: #000000;
           opacity: 0.3;
@@ -79,6 +90,8 @@ export class TemplateElementPreviewComponent {
 
   private builderFacade = inject(BuilderFacade);
   private elementRef = inject(ElementRef);
+
+  selectedElement$ = this.builderFacade.selectedElement$;
 
   getStyles(): any {
     const styles: any = {};
