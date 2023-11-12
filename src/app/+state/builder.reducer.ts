@@ -39,7 +39,7 @@ export const builderReducer = createReducer(
     currentLayout: updatedLayout,
     isDragging: false,
   })),
-  on(BuilderActions.dragEnd, (state) => ({ ...initialState })),
+  on(BuilderActions.dragEnd, (state) => ({ ...state, isDragging: false })),
   on(
     BuilderActions.displayGhostSuccess,
     (state, { updatedLayout, parentId, insertAfterId }) => ({

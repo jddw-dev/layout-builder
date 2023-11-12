@@ -13,6 +13,7 @@ export class OneColHalfTemplateElement implements TemplateElementBuilder {
       content: [
         {
           id: uuidv4(),
+          acceptDrop: true,
           type: TemplateElementType.COLUMN,
           content: [],
           styles: [

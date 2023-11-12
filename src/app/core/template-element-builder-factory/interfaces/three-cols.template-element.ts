@@ -13,18 +13,21 @@ export class ThreeColsTemplateElement implements TemplateElementBuilder {
       content: [
         {
           id: uuidv4(),
+          acceptDrop: true,
           type: TemplateElementType.COLUMN,
           content: [],
         },
 
         {
           id: uuidv4(),
+          acceptDrop: true,
           type: TemplateElementType.COLUMN,
           content: [],
         },
 
         {
           id: uuidv4(),
+          acceptDrop: true,
           type: TemplateElementType.COLUMN,
           content: [],
         },

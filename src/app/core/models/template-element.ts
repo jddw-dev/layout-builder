@@ -13,6 +13,7 @@ export interface TemplateElement {
   // Utils properties
   id?: string;
   isGhost?: boolean;
+  acceptDrop?: boolean;
 
   // Export properties
   type: TemplateElementType;
