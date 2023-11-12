@@ -3,6 +3,7 @@ import { InsertPosition } from '../models/insert-position';
 import { TemplateElement } from '../models/template-element';
 import { TemplateElementItem } from '../models/template-element-item';
 import { TemplateElementBuilderFactory } from '../template-element-builder-factory/template-element-builder.factory';
+import { LayoutGhostManagerService } from './layout-ghost-manager.service';
 
 /**
  * This service is used to manage layout updates
@@ -10,6 +11,8 @@ import { TemplateElementBuilderFactory } from '../template-element-builder-facto
  */
 @Injectable({ providedIn: 'root' })
 export class LayoutBuilderService {
+  private layoutGhostManagerService = inject(LayoutGhostManagerService);
+
   private templateElementBuilderFactory = inject(TemplateElementBuilderFactory);
 
   /**
@@ -63,7 +66,7 @@ export class LayoutBuilderService {
     if (builder) {
       newElement = builder.getElement();
       if (isGhost) {
-        newElement = this.getGhostElement(newElement);
+        newElement = this.layoutGhostManagerService.getGhostElement(newElement);
       }
     }
 
@@ -87,7 +90,8 @@ export class LayoutBuilderService {
       ...currentLayout,
     };
 
-    updatedLayout = this.removeGhostElement(updatedLayout);
+    updatedLayout =
+      this.layoutGhostManagerService.removeGhostElement(updatedLayout);
     if (!updatedLayout) {
       // Error : trying to insert an element inside the ghost
       return currentLayout;
@@ -152,61 +156,5 @@ export class LayoutBuilderService {
     }
 
     return updatedContent;
-  }
-
-  /**
-   * Transform element into ghost element
-   * Also apply ghost to all children
-   *
-   * @param element Element to transform into ghost
-   * @returns Updated element
-   */
-  private getGhostElement(element: TemplateElement): TemplateElement {
-    const updatedElement = {
-      ...element,
-      isGhost: true,
-    };
-
-    if (element.content) {
-      // Reset content
-      updatedElement.content = [];
-
-      element.content.forEach((childElement) => {
-        updatedElement.content!.push(this.getGhostElement(childElement));
-      });
-    }
-
-    return updatedElement;
-  }
-
-  /**
-   * Find ghost element inside element and its children
-   * Then remove it and returns updated element
-   *
-   * @param element Element to remove ghost from
-   * @returns Updated element or null if element is ghost
-   */
-  private removeGhostElement(element: TemplateElement): TemplateElement | null {
-    if (element.isGhost) {
-      return null;
-    }
-
-    const updatedElement = {
-      ...element,
-    };
-
-    if (element.content) {
-      // Reset content
-      updatedElement.content = [];
-
-      element.content.forEach((childElement) => {
-        const updatedChildElement = this.removeGhostElement(childElement);
-        if (updatedChildElement) {
-          updatedElement.content!.push(updatedChildElement);
-        }
-      });
-    }
-
-    return updatedElement;
   }
 }
