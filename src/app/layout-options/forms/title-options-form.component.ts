@@ -2,7 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
+  OnChanges,
   Output,
   inject,
 } from '@angular/core';
@@ -29,14 +29,14 @@ import {
   `,
   styles: [],
 })
-export class TitleOptionsFormComponent implements OnInit {
+export class TitleOptionsFormComponent implements OnChanges {
   @Input({ required: true }) title: string;
   @Output() optionsSaved: EventEmitter<any> = new EventEmitter<any>();
 
   private formBuilder = inject(FormBuilder);
   form!: FormGroup;
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.form = this.formBuilder.group({
       title: new FormControl(this.title),
     });

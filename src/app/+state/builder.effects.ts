@@ -135,18 +135,21 @@ export class BuilderEffects {
       ofType(BuilderActions.updateElement),
       pipe(
         withLatestFrom(this.builderFacade.currentLayout$),
-        switchMap(([action, currentLayout]) => {
+        switchMap(([{ element }, currentLayout]) => {
           if (!currentLayout) {
             return EMPTY;
           }
 
           const updatedLayout = this.layoutBuilderService.updateElement(
             currentLayout,
-            action.element
+            element
           );
 
           return of(
-            BuilderActions.loadLayoutSuccess({ layout: updatedLayout })
+            BuilderActions.updateElementSuccess({
+              updatedLayout: updatedLayout,
+              element: element,
+            })
           );
         })
       )

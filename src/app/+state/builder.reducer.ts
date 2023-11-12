@@ -60,5 +60,13 @@ export const builderReducer = createReducer(
   on(BuilderActions.removeSelectedElement, (state) => ({
     ...state,
     selectedElement: null,
-  }))
+  })),
+  on(
+    BuilderActions.updateElementSuccess,
+    (state, { updatedLayout, element }) => ({
+      ...state,
+      currentLayout: updatedLayout,
+      selectedElement: element,
+    })
+  )
 );

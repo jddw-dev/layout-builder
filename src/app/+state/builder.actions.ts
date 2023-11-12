@@ -23,5 +23,9 @@ export const BuilderActions = createActionGroup({
     'Select Element': props<{ element: TemplateElement }>(),
     'Remove Selected Element': emptyProps(),
     'Update Element': props<{ element: TemplateElement }>(),
+    'Update Element Success': props<{
+      updatedLayout: TemplateElement;
+      element: TemplateElement;
+    }>(),
   },
 });

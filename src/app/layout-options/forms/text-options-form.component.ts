@@ -2,7 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
+  OnChanges,
   Output,
   inject,
 } from '@angular/core';
@@ -31,14 +31,14 @@ import {
   `,
   styles: [],
 })
-export class TextOptionsFormComponent implements OnInit {
+export class TextOptionsFormComponent implements OnChanges {
   @Input({ required: true }) text: string;
   @Output() optionsSaved: EventEmitter<any> = new EventEmitter<any>();
 
   private formBuilder = inject(FormBuilder);
   form!: FormGroup;
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.form = this.formBuilder.group({
       text: new FormControl(this.text),
     });
