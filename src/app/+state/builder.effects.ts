@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, of, pipe, switchMap, withLatestFrom } from 'rxjs';
 import { LayoutBuilderService } from '../core/services/layout-builder.service';
 import { LayoutIdManagerService } from '../core/services/layout-id-manager.service';
+import { LayoutGhostManagerService } from './../core/services/layout-ghost-manager.service';
 import { BuilderActions } from './builder.actions';
 import { BuilderFacade } from './builder.facade';
 
@@ -11,6 +12,7 @@ export class BuilderEffects {
   private actions$ = inject(Actions);
 
   private layoutBuilderService = inject(LayoutBuilderService);
+  private layoutGhostManagerService = inject(LayoutGhostManagerService);
   private layoutIdManagerService = inject(LayoutIdManagerService);
 
   private builderFacade = inject(BuilderFacade);
@@ -93,6 +95,37 @@ export class BuilderEffects {
             );
           }
         )
+      )
+    )
+  );
+
+  /**
+   * Remove ghost on every drag end
+   */
+  dragEnd$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BuilderActions.dragEnd),
+      pipe(
+        withLatestFrom(this.builderFacade.currentLayout$),
+        switchMap(([_, currentLayout]) => {
+          console.log('dragEnd effect');
+          if (!currentLayout) {
+            console.log('no currentLayout');
+            return EMPTY;
+          }
+
+          const updatedLayout =
+            this.layoutGhostManagerService.removeGhostElement(currentLayout);
+          console.log('updatedLayout: ');
+          console.log(updatedLayout);
+          if (!updatedLayout) {
+            return EMPTY;
+          }
+
+          return of(
+            BuilderActions.loadLayoutSuccess({ layout: updatedLayout })
+          );
+        })
       )
     )
   );

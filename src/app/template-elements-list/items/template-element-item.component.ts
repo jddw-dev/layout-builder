@@ -8,7 +8,12 @@ import { TemplateElementItem } from '../../core/models/template-element-item';
   standalone: true,
   imports: [DragDropModule, NgIf],
   template: `
-    <div class="dragdrop-element" pDraggable (onDragStart)="dragStart()">
+    <div
+      class="dragdrop-element"
+      pDraggable
+      (onDragStart)="onDragStart.emit()"
+      (onDragEnd)="onDragEnd.emit()"
+    >
       <img *ngIf="element.image" [src]="element.image" class="display-image" />
       <span *ngIf="!element.image" class="display-name">{{
         element.displayName
@@ -45,8 +50,5 @@ import { TemplateElementItem } from '../../core/models/template-element-item';
 export class TemplateElementItemComponent {
   @Input({ required: true }) element: TemplateElementItem;
   @Output() onDragStart: EventEmitter<void> = new EventEmitter<void>();
-
-  dragStart(): void {
-    this.onDragStart.emit();
-  }
+  @Output() onDragEnd: EventEmitter<void> = new EventEmitter<void>();
 }

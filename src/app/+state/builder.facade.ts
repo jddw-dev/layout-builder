@@ -33,6 +33,10 @@ export class BuilderFacade {
     this.store.dispatch(BuilderActions.dragStart({ element }));
   }
 
+  dragEnd(element: TemplateElementItem) {
+    this.store.dispatch(BuilderActions.dragEnd({ element }));
+  }
+
   drop(parentId: string, insertAfterId: string | null) {
     this.store.dispatch(BuilderActions.drop({ parentId, insertAfterId }));
   }

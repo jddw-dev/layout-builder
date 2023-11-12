@@ -28,6 +28,7 @@ import { TemplateElementItemComponent } from './items/template-element-item.comp
           *ngFor="let containerItem of containerItems"
           [element]="containerItem"
           (onDragStart)="onDragStart(containerItem)"
+          (onDragEnd)="onDragEnd(containerItem)"
         ></template-element-item>
       </div>
 
@@ -40,6 +41,7 @@ import { TemplateElementItemComponent } from './items/template-element-item.comp
           *ngFor="let contentItem of contentItems"
           [element]="contentItem"
           (onDragStart)="onDragStart(contentItem)"
+          (onDragEnd)="onDragEnd(contentItem)"
         ></template-element-item>
       </div>
     </section>
@@ -65,5 +67,9 @@ export class TemplateElementsListComponent {
 
   onDragStart(element: TemplateElementItem) {
     this.builderFacade.dragStart(element);
+  }
+
+  onDragEnd(element: TemplateElementItem) {
+    this.builderFacade.dragEnd(element);
   }
 }
