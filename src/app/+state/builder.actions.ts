@@ -1,4 +1,4 @@
-import { createActionGroup, props } from '@ngrx/store';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { TemplateElementItem } from '../core/models/template-element-item';
 import { TemplateElement } from './../core/models/template-element';
 
@@ -20,5 +20,7 @@ export const BuilderActions = createActionGroup({
     }>(),
     Drop: props<{ parentId: string; insertAfterId: string | null }>(),
     'Drop Success': props<{ updatedLayout: TemplateElement }>(),
+    'Select Element': props<{ element: TemplateElement }>(),
+    'Remove Selected Element': emptyProps(),
   },
 });

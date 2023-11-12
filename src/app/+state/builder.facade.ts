@@ -46,4 +46,12 @@ export class BuilderFacade {
       BuilderActions.displayGhost({ parentId, insertAfterId })
     );
   }
+
+  selectElement(element: TemplateElement) {
+    this.store.dispatch(BuilderActions.selectElement({ element }));
+  }
+
+  removeSelectedElement() {
+    this.store.dispatch(BuilderActions.removeSelectedElement());
+  }
 }

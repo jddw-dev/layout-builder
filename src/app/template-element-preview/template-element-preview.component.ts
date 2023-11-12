@@ -153,4 +153,13 @@ export class TemplateElementPreviewComponent {
       this.builderFacade.displayGhost(this.element.id, insertAfterId);
     }
   }
+
+  click(event: any) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (this.element.id) {
+      this.builderFacade.selectElement(this.element);
+    }
+  }
 }
