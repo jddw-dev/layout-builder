@@ -36,8 +36,7 @@ export class BuilderEffects {
             const updatedLayout = this.layoutBuilderService.buildUpdatedLayout(
               currentLayout!,
               currentItem,
-              parentId,
-              insertAfterId,
+              { parentId, insertAfterId },
               false
             );
 
@@ -62,23 +61,18 @@ export class BuilderEffects {
             { parentId, insertAfterId },
             { currentLayout, currentItem, currentGhostInfos },
           ]) => {
-            console.log('EFFECT displayGhost$');
-            console.log(`${parentId} - ${insertAfterId}`);
-
             if (
               currentGhostInfos?.parentId === parentId &&
               currentGhostInfos?.insertAfterId === insertAfterId
             ) {
               // Ghost already exists !
-              console.log('already exists');
               return EMPTY;
             }
 
             const updatedLayout = this.layoutBuilderService.buildUpdatedLayout(
               currentLayout!,
               currentItem,
-              parentId,
-              insertAfterId,
+              { parentId, insertAfterId },
               true
             );
 

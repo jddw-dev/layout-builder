@@ -149,17 +149,12 @@ export class TemplateElementPreviewComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    console.log(`dragEnter: ${this.element.type}`);
-
     if (this.element.isGhost || this.element.type === TemplateElementType.ROW) {
       return;
     }
 
     const insertAfterId = this.getInsertAfterId(event);
-    console.log(`insertAfterId: ${insertAfterId}`);
     if (this.element.id) {
-      console.log('displayGhost');
-      console.log(`${this.element.id} - ${insertAfterId}`);
       this.builderFacade.displayGhost(this.element.id, insertAfterId);
     }
   }

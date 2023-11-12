@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
+import { InsertPosition } from '../models/insert-position';
 import { TemplateElement } from '../models/template-element';
 import { TemplateElementItem } from '../models/template-element-item';
 import { TemplateElementBuilderFactory } from '../template-element-builder-factory/template-element-builder.factory';
@@ -8,32 +9,42 @@ import { TemplateElementBuilderFactory } from '../template-element-builder-facto
 export class LayoutBuilderService {
   private templateElementBuilderFactory = inject(TemplateElementBuilderFactory);
 
-  generateId(element: TemplateElement) {
+  /**
+   * This method is used to generate ID for each layout element
+   * Id is then used to know where the drop happened
+   * Also generate IDs for each element's children
+   *
+   * @param element Element to generate ID for
+   * @returns Element with ID and children with IDs
+   */
+  generateId(element: TemplateElement): TemplateElement {
     const updatedElement: TemplateElement = { ...element };
 
     if (!updatedElement.id) {
       updatedElement.id = uuidv4();
     }
 
+    updatedElement.content = this.generateIdsForChildren(updatedElement);
+
+    return updatedElement;
+  }
+
+  private generateIdsForChildren(element: TemplateElement): TemplateElement[] {
     const updatedContent: TemplateElement[] = [];
 
-    if (updatedElement.content) {
-      for (const child of updatedElement.content) {
-        const updatedChild = this.generateId(child);
-        updatedContent.push(updatedChild);
+    if (element.content) {
+      for (const child of element.content) {
+        updatedContent.push(this.generateId(child));
       }
     }
 
-    updatedElement.content = updatedContent;
-
-    return updatedElement;
+    return updatedContent;
   }
 
   buildUpdatedLayout(
     currentLayout: TemplateElement,
     currentItem: TemplateElementItem | null,
-    parentId: string,
-    insertAfterId: string | null,
+    insertPosition: InsertPosition,
     isGhost = false
   ): TemplateElement | null {
     const newElement = this.getNewElement(currentItem, isGhost);
@@ -41,8 +52,7 @@ export class LayoutBuilderService {
     const updatedLayout = this.getUpdatedLayout(
       currentLayout!,
       newElement,
-      parentId,
-      insertAfterId
+      insertPosition
     );
 
     if (!updatedLayout) {
@@ -55,33 +65,28 @@ export class LayoutBuilderService {
 
   private insertChild(
     content: TemplateElement,
-    parentId: string,
     childToInsert: TemplateElement,
-    insertAfterId: string | null = null
+    insertPosition: InsertPosition
   ) {
-    console.log('InsertChild:');
-    console.log(`parentId: ${parentId}`);
-    console.log(`insertAfterId: ${insertAfterId}`);
-
     const updatedContent: TemplateElement = { ...content, content: [] };
     if (content.content) {
       updatedContent.content = [...content.content];
     }
 
-    if (updatedContent.id === parentId) {
+    if (updatedContent.id === insertPosition.parentId) {
       // We found the right parent
 
       if (!updatedContent.content) {
         updatedContent.content = [];
       }
 
-      if (insertAfterId === null) {
+      if (insertPosition.insertAfterId === null) {
         // Insert top
         updatedContent.content = [childToInsert, ...updatedContent.content];
       } else {
         // Insert bottom
         const insertAfterIndex = updatedContent.content.findIndex(
-          (child) => child.id === insertAfterId
+          (child) => child.id === insertPosition.insertAfterId
         );
 
         if (insertAfterIndex === -1) {
@@ -96,7 +101,11 @@ export class LayoutBuilderService {
 
       if (updatedContent.content) {
         for (const child of updatedContent.content) {
-          const updatedChild = this.insertChild(child, parentId, childToInsert);
+          const updatedChild = this.insertChild(
+            child,
+            childToInsert,
+            insertPosition
+          );
           updatedChildren.push(updatedChild);
         }
       }
@@ -131,8 +140,7 @@ export class LayoutBuilderService {
   private getUpdatedLayout(
     currentLayout: TemplateElement,
     newElement: TemplateElement | null,
-    parentId: string,
-    insertAfterId: string | null
+    insertPosition: InsertPosition
   ): TemplateElement | null {
     let updatedLayout: TemplateElement | null = {
       ...currentLayout!,
@@ -146,9 +154,8 @@ export class LayoutBuilderService {
     if (newElement) {
       updatedLayout = this.insertChild(
         updatedLayout,
-        parentId,
         newElement,
-        insertAfterId
+        insertPosition
       );
     }
 
