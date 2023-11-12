@@ -3,12 +3,22 @@ export enum TemplateElementType {
   ROW = 'row',
   COLUMN = 'column',
   SHEET = 'sheet',
+  TITLE = 'title',
+  TEXT = 'text',
+  TAB = 'tab',
+  DIVIDER = 'divider',
 }
 
 export interface TemplateElement {
+  // Utils properties
   id?: string;
+  isGhost?: boolean;
+
+  // Export properties
   type: TemplateElementType;
   content?: TemplateElement[];
   displayName?: boolean;
-  styles?: [{ property: string; value: string }];
+  styles?: { property: string; value: string }[];
+  title?: string;
+  text?: string;
 }

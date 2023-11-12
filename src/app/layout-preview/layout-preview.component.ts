@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { BuilderFacade } from '../+state/builder.facade';
 import { TemplateElementPreviewComponent } from '../template-element-preview/template-element-preview.component';
@@ -6,7 +6,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
 @Component({
   selector: 'layout-preview',
   standalone: true,
-  imports: [CommonModule, TemplateElementPreviewComponent],
+  imports: [NgIf, AsyncPipe, TemplateElementPreviewComponent],
   template: `
     <section class="layout-preview">
       <div *ngIf="layout$ | async as layout">

@@ -49,3 +49,12 @@ export const selectBuilderCurrentLayoutAndItem = createSelector(
     currentItem: state.currentItem,
   })
 );
+
+export const selectBuilderLayoutItemGhost = createSelector(
+  selectBuilderState,
+  (state: BuilderState) => ({
+    currentLayout: state.currentLayout,
+    currentItem: state.currentItem,
+    currentGhostInfos: state.currentGhostInfos,
+  })
+);

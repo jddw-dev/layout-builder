@@ -1,13 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, pipe, switchMap, withLatestFrom } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
-import { DropPosition } from '../core/models/drop-position';
-import {
-  TemplateElement,
-  TemplateElementType,
-} from '../core/models/template-element';
-import { TemplateElementBuilderFactory } from '../core/template-element-builder-factory/template-element-builder.factory';
+import { EMPTY, of, pipe, switchMap, withLatestFrom } from 'rxjs';
+import { LayoutBuilderService } from '../core/services/layout-builder.service';
+import { LayoutIdManagerService } from '../core/services/layout-id-manager.service';
 import { BuilderActions } from './builder.actions';
 import { BuilderFacade } from './builder.facade';
 
@@ -15,10 +10,10 @@ import { BuilderFacade } from './builder.facade';
 export class BuilderEffects {
   private actions$ = inject(Actions);
 
-  constructor(
-    private builderFacade: BuilderFacade,
-    private templateElementBuilderFactory: TemplateElementBuilderFactory
-  ) {}
+  private layoutBuilderService = inject(LayoutBuilderService);
+  private layoutIdManagerService = inject(LayoutIdManagerService);
+
+  private builderFacade = inject(BuilderFacade);
 
   /**
    * This effect is used to generate ID for each layout element
@@ -28,33 +23,12 @@ export class BuilderEffects {
     this.actions$.pipe(
       ofType(BuilderActions.loadLayout),
       switchMap(({ layout }) => {
-        const updatedLayout = this.generateId(layout);
+        const updatedLayout = this.layoutIdManagerService.generateId(layout);
 
         return of(BuilderActions.loadLayoutSuccess({ layout: updatedLayout }));
       })
     )
   );
-
-  private generateId(element: TemplateElement) {
-    const updatedElement: TemplateElement = { ...element };
-
-    if (!updatedElement.id) {
-      updatedElement.id = uuidv4();
-    }
-
-    const updatedContent: TemplateElement[] = [];
-
-    if (updatedElement.content) {
-      for (const child of updatedElement.content) {
-        const updatedChild = this.generateId(child);
-        updatedContent.push(updatedChild);
-      }
-    }
-
-    updatedElement.content = updatedContent;
-
-    return updatedElement;
-  }
 
   drop$ = createEffect(() =>
     this.actions$.pipe(
@@ -62,32 +36,17 @@ export class BuilderEffects {
       pipe(
         withLatestFrom(this.builderFacade.currentLayoutAndItem$),
         switchMap(
-          ([{ parentId, insertPosition }, { currentLayout, currentItem }]) => {
-            let newElement: TemplateElement | null = null;
-
-            if (currentItem) {
-              const builder =
-                this.templateElementBuilderFactory.createElementBuilder(
-                  currentItem.type
-                );
-
-              if (builder) {
-                newElement = builder.getElement();
-              }
+          ([{ parentId, insertAfterId }, { currentLayout, currentItem }]) => {
+            if (!currentLayout || !currentItem) {
+              return EMPTY;
             }
 
-            let updatedLayout: TemplateElement = {
-              ...currentLayout!,
-            };
-
-            if (newElement) {
-              updatedLayout = this.insertChild(
-                updatedLayout,
-                parentId,
-                newElement,
-                insertPosition
-              );
-            }
+            const updatedLayout = this.layoutBuilderService.buildUpdatedLayout(
+              currentLayout,
+              currentItem,
+              { parentId, insertAfterId },
+              false
+            );
 
             return of(BuilderActions.dropSuccess({ updatedLayout }));
           }
@@ -96,52 +55,45 @@ export class BuilderEffects {
     )
   );
 
-  private insertChild(
-    content: TemplateElement,
-    parentId: string,
-    childToInsert: TemplateElement,
-    insertPosition: DropPosition = { x: 'right', y: 'bottom' }
-  ) {
-    const updatedContent: TemplateElement = { ...content, content: [] };
-    if (content.content) {
-      updatedContent.content = [...content.content];
-    }
+  displayGhost$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BuilderActions.displayGhost),
+      pipe(
+        withLatestFrom(this.builderFacade.currentLayoutItemGhost$),
+        switchMap(
+          ([
+            { parentId, insertAfterId },
+            { currentLayout, currentItem, currentGhostInfos },
+          ]) => {
+            if (!currentLayout || !currentItem) {
+              return EMPTY;
+            }
 
-    if (updatedContent.id === parentId) {
-      // We found the right parent
+            if (
+              currentGhostInfos?.parentId === parentId &&
+              currentGhostInfos?.insertAfterId === insertAfterId
+            ) {
+              // Ghost already exists !
+              return EMPTY;
+            }
 
-      if (!updatedContent.content) {
-        updatedContent.content = [];
-      }
+            const updatedLayout = this.layoutBuilderService.buildUpdatedLayout(
+              currentLayout,
+              currentItem,
+              { parentId, insertAfterId },
+              true
+            );
 
-      // TODO : rendre plus propre et surtout EXTENSIBLE !!
-      // Là il faudrait rajouter des conditions à chaque nouveau type
-      if (updatedContent.type === TemplateElementType.COLUMN) {
-        if (insertPosition.x === 'left') {
-          updatedContent.content = [childToInsert, ...updatedContent.content];
-        } else {
-          updatedContent.content = [...updatedContent.content, childToInsert];
-        }
-      } else {
-        if (insertPosition.y === 'top') {
-          updatedContent.content = [childToInsert, ...updatedContent.content];
-        } else {
-          updatedContent.content = [...updatedContent.content, childToInsert];
-        }
-      }
-    } else {
-      const updatedChildren: TemplateElement[] = [];
-
-      if (updatedContent.content) {
-        for (const child of updatedContent.content) {
-          const updatedChild = this.insertChild(child, parentId, childToInsert);
-          updatedChildren.push(updatedChild);
-        }
-      }
-
-      updatedContent.content = updatedChildren;
-    }
-
-    return updatedContent;
-  }
+            return of(
+              BuilderActions.displayGhostSuccess({
+                updatedLayout,
+                parentId,
+                insertAfterId,
+              })
+            );
+          }
+        )
+      )
+    )
+  );
 }

@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DragDropModule } from 'primeng/dragdrop';
 import { TemplateElementItem } from '../../core/models/template-element-item';
@@ -5,26 +6,37 @@ import { TemplateElementItem } from '../../core/models/template-element-item';
 @Component({
   selector: 'template-element-item',
   standalone: true,
-  imports: [DragDropModule],
+  imports: [DragDropModule, NgIf],
   template: `
-    <button
-      class="btn btn-dark dragdrop-element"
-      pDraggable
-      (onDragStart)="dragStart()"
-      (onDrag)="drag($event)"
-    >
-      {{ element.displayName }}
-    </button>
+    <div class="dragdrop-element" pDraggable (onDragStart)="dragStart()">
+      <img *ngIf="element.image" [src]="element.image" class="display-image" />
+      <span *ngIf="!element.image" class="display-name">{{
+        element.displayName
+      }}</span>
+    </div>
   `,
   styles: [
     `
-      button {
-        display: block;
-        margin: 10px auto;
-      }
       .dragdrop-element {
+        display: block;
+        margin: 20px auto;
+        cursor: pointer;
+
         &:active {
           z-index: 1000;
+        }
+
+        .display-image {
+          display: block;
+          width: 100%;
+          height: auto;
+        }
+
+        .display-name {
+          display: block;
+          text-align: center;
+          border: 1px solid #ccc;
+          border-radius: 5px;
         }
       }
     `,
@@ -36,11 +48,5 @@ export class TemplateElementItemComponent {
 
   dragStart(): void {
     this.onDragStart.emit();
-  }
-
-  drag(event: DragEvent): void {
-    // console.log('dragEvent:');
-    // const position = { x: event.clientX, y: event.clientY };
-    // console.log(position);
   }
 }

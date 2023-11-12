@@ -23,13 +23,12 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
   styles: [
     `
       .row-element {
-        padding: 10px;
+        padding: 1px;
         border: #cccccc dashed 2px;
         border-radius: 8px;
 
-        margin-bottom: 15px;
-
         display: flex;
+        margin: 50px 0;
       }
     `,
   ],
