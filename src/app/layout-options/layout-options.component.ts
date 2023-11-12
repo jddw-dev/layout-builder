@@ -1,7 +1,8 @@
-import { NgSwitch, NgSwitchCase } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { TemplateElement } from '../core/models/template-element';
 import { BuilderFacade } from './../+state/builder.facade';
+import { ContainersFormComponent } from './forms/containers-form.component';
 import { TextOptionsFormComponent } from './forms/text-options-form.component';
 import { TitleOptionsFormComponent } from './forms/title-options-form.component';
 
@@ -11,8 +12,8 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
   imports: [
     TitleOptionsFormComponent,
     TextOptionsFormComponent,
-    NgSwitch,
-    NgSwitchCase,
+    ContainersFormComponent,
+    NgIf,
   ],
   template: `
     <h2 class="text-center">Options</h2>
@@ -20,18 +21,23 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
       {{ selectedElement.type }}
     </h3>
 
-    <div [ngSwitch]="selectedElement.type">
-      <title-options-form
-        [title]="selectedElement.title!"
-        (optionsSaved)="saveOptions($event)"
-      ></title-options-form>
+    <title-options-form
+      *ngIf="selectedElement.type === 'title'"
+      [title]="selectedElement.title!"
+      (optionsSaved)="saveOptions($event)"
+    ></title-options-form>
 
-      <text-options-form
-        *ngSwitchCase="'text'"
-        [text]="selectedElement.text!"
-        (optionsSaved)="saveOptions($event)"
-      ></text-options-form>
-    </div>
+    <text-options-form
+      *ngIf="selectedElement.type === 'text'"
+      [text]="selectedElement.text!"
+      (optionsSaved)="saveOptions($event)"
+    ></text-options-form>
+
+    <container-options-form
+      *ngIf="['main', 'row', 'column'].includes(selectedElement.type)"
+      [styles]="selectedElement.styles!"
+      (optionsSaved)="saveOptions($event)"
+    ></container-options-form>
   `,
   styles: [],
 })
