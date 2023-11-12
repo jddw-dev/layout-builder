@@ -1,10 +1,7 @@
 import { NgClass, NgSwitch, NgSwitchCase } from '@angular/common';
 import { Component, ElementRef, Input, inject } from '@angular/core';
 import { DragDropModule } from 'primeng/dragdrop';
-import {
-  TemplateElement,
-  TemplateElementType,
-} from '../core/models/template-element';
+import { TemplateElement } from '../core/models/template-element';
 import { ColElementComponent } from '../layout-elements/col-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
@@ -102,8 +99,8 @@ export class TemplateElementPreviewComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    // Row cannot accept drop
-    if (this.element.type === TemplateElementType.ROW) {
+    // Can the element accepts drop ?
+    if (!this.element.acceptDrop) {
       return;
     }
 
@@ -147,7 +144,7 @@ export class TemplateElementPreviewComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    if (this.element.isGhost || this.element.type === TemplateElementType.ROW) {
+    if (this.element.isGhost || !this.element.acceptDrop) {
       return;
     }
 
