@@ -24,7 +24,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
   template: `
     <div class="accordion-element element-preview" [style]="accordionStyles">
       <div class="accordion-title" (click)="toggleAccordion($event)">
-        Accordion
+        {{ title }}
       </div>
 
       <div class="accordion-body" [ngClass]="{ isOpened: isOpened }">
@@ -64,6 +64,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
 export class AccordionElementComponent implements OnChanges {
   @Input() content?: TemplateElement[];
   @Input() styles?: Style[];
+  @Input() title?: string;
 
   isOpened? = true;
 

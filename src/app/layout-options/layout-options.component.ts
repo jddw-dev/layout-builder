@@ -2,6 +2,7 @@ import { NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { TemplateElement } from '../core/models/template-element';
 import { BuilderFacade } from './../+state/builder.facade';
+import { AccordionOptionsFormComponent } from './forms/accordion-options-form.component';
 import { ContainersFormComponent } from './forms/containers-form.component';
 import { TextOptionsFormComponent } from './forms/text-options-form.component';
 import { TitleOptionsFormComponent } from './forms/title-options-form.component';
@@ -13,6 +14,7 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
     TitleOptionsFormComponent,
     TextOptionsFormComponent,
     ContainersFormComponent,
+    AccordionOptionsFormComponent,
     NgIf,
   ],
   template: `
@@ -34,10 +36,15 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
         (optionsSaved)="saveOptions($event)"
       ></text-options-form>
 
+      <accordion-options-form
+        *ngIf="selectedElement.type === 'accordion'"
+        [title]="selectedElement.title!"
+        [styles]="selectedElement.styles!"
+        (optionsSaved)="saveOptions($event)"
+      ></accordion-options-form>
+
       <container-options-form
-        *ngIf="
-          ['main', 'row', 'column', 'accordion'].includes(selectedElement.type)
-        "
+        *ngIf="['main', 'row', 'column'].includes(selectedElement.type)"
         [styles]="selectedElement.styles!"
         (optionsSaved)="saveOptions($event)"
       ></container-options-form>

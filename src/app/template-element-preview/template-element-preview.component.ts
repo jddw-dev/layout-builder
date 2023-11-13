@@ -68,6 +68,7 @@ import { BuilderFacade } from './../+state/builder.facade';
       <accordion-element
         *ngSwitchCase="'accordion'"
         [content]="element.content"
+        [title]="element.title"
         [styles]="element.styles"
       ></accordion-element>
 

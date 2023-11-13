@@ -12,6 +12,7 @@ export class AccordionTemplateElement implements TemplateElementBuilder {
       id: uuidv4(),
       acceptDrop: true,
       type: TemplateElementType.ACCORDION,
+      title: 'Accordéon',
       content: [],
     };
   }
