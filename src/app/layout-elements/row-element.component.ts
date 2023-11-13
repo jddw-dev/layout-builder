@@ -27,7 +27,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
         border: #cccccc dashed 2px;
 
         display: flex;
-        margin: 50px 0;
+        margin: 25px 0;
       }
     `,
   ],
