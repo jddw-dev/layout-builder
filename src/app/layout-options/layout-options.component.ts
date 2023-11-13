@@ -21,23 +21,25 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
       {{ selectedElement.type }}
     </h3>
 
-    <title-options-form
-      *ngIf="selectedElement.type === 'title'"
-      [title]="selectedElement.title!"
-      (optionsSaved)="saveOptions($event)"
-    ></title-options-form>
+    <div>
+      <title-options-form
+        *ngIf="selectedElement.type === 'title'"
+        [title]="selectedElement.title!"
+        (optionsSaved)="saveOptions($event)"
+      ></title-options-form>
 
-    <text-options-form
-      *ngIf="selectedElement.type === 'text'"
-      [text]="selectedElement.text!"
-      (optionsSaved)="saveOptions($event)"
-    ></text-options-form>
+      <text-options-form
+        *ngIf="selectedElement.type === 'text'"
+        [text]="selectedElement.text!"
+        (optionsSaved)="saveOptions($event)"
+      ></text-options-form>
 
-    <container-options-form
-      *ngIf="['main', 'row', 'column'].includes(selectedElement.type)"
-      [styles]="selectedElement.styles!"
-      (optionsSaved)="saveOptions($event)"
-    ></container-options-form>
+      <container-options-form
+        *ngIf="['main', 'row', 'column'].includes(selectedElement.type)"
+        [styles]="selectedElement.styles!"
+        (optionsSaved)="saveOptions($event)"
+      ></container-options-form>
+    </div>
   `,
   styles: [],
 })
