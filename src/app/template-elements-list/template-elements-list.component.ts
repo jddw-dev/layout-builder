@@ -18,9 +18,9 @@ import { TemplateElementItemComponent } from './items/template-element-item.comp
   ],
   template: `
     <section class="template-elements-list">
-      <h1>Template Elements</h1>
+      <h1>Elements</h1>
       <mat-divider></mat-divider>
-      <h2>Containers</h2>
+      <h2>Conteneurs</h2>
       <mat-divider></mat-divider>
 
       <div>
@@ -33,7 +33,7 @@ import { TemplateElementItemComponent } from './items/template-element-item.comp
       </div>
 
       <mat-divider></mat-divider>
-      <h2>Content</h2>
+      <h2>Contenu</h2>
       <mat-divider></mat-divider>
 
       <div>
