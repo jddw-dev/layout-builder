@@ -4,45 +4,111 @@ import {
   Input,
   OnChanges,
   Output,
-  inject,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { SliderModule } from 'primeng/slider';
+import { Style } from '../../core/models/style';
 
 @Component({
   standalone: true,
   selector: 'title-options-form',
-  imports: [ReactiveFormsModule],
+  imports: [FormsModule, SliderModule, RadioButtonModule],
   template: `
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <div>
       <div class="mb-3">
         <label>Title</label>
-        <input class="form-control" formControlName="title" />
+        <input class="form-control" [(ngModel)]="title" />
       </div>
 
-      <button type="submit" class="btn btn-primary btn-sm">Save</button>
-    </form>
+      <div class="mb-3">
+        <label>Taille</label>
+        <p-slider [(ngModel)]="fontSize" [min]="10" [max]="50"></p-slider>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="fontSize"
+          [value]="fontSize"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label>Alignement</label>
+        <div class="flex flex-wrap gap-3">
+          <div class="flex align-items-center">
+            <p-radioButton
+              inputId="textAlignLeft"
+              name="textAlign"
+              value="left"
+              [(ngModel)]="textAlign"
+            ></p-radioButton>
+            <label for="textAlignLeft">Gauche</label>
+          </div>
+
+          <div class="flex align-items-center">
+            <p-radioButton
+              inputId="textAlignRight"
+              name="textAlign"
+              value="right"
+              [(ngModel)]="textAlign"
+            ></p-radioButton>
+            <label for="textAlignRight">Droite</label>
+          </div>
+
+          <div class="flex align-items-center">
+            <p-radioButton
+              inputId="textAlignCenter"
+              name="textAlign"
+              value="center"
+              [(ngModel)]="textAlign"
+            ></p-radioButton>
+            <label for="textAlignCenter">Centre</label>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-sm" (click)="submit()">
+        Save
+      </button>
+    </div>
   `,
   styles: [],
 })
 export class TitleOptionsFormComponent implements OnChanges {
   @Input({ required: true }) title: string;
+  @Input() styles?: Style[];
   @Output() optionsSaved: EventEmitter<any> = new EventEmitter<any>();
 
-  private formBuilder = inject(FormBuilder);
-  form!: FormGroup;
+  fontSize?: number;
+  textAlign?: string;
 
   ngOnChanges(): void {
-    this.form = this.formBuilder.group({
-      title: new FormControl(this.title),
-    });
+    const fontSizeStyle = this.styles?.find(
+      (style) => style.property === 'fontSize'
+    );
+    this.fontSize = fontSizeStyle
+      ? parseInt(fontSizeStyle.value.replace('px', ''))
+      : 30;
+
+    this.textAlign =
+      this.styles?.find((style) => style.property === 'textAlign')?.value ??
+      'left';
   }
 
   submit(): void {
-    this.optionsSaved.emit(this.form.value);
+    this.optionsSaved.emit({
+      title: this.title,
+      styles: [
+        {
+          property: 'fontSize',
+          value: `${this.fontSize}px`,
+        },
+
+        {
+          property: 'textAlign',
+          value: this.textAlign,
+        },
+      ],
+    });
   }
 }

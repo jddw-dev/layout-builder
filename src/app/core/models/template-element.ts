@@ -2,6 +2,7 @@ export enum TemplateElementType {
   MAIN = 'main',
   ROW = 'row',
   COLUMN = 'column',
+  ACCORDION = 'accordion',
   SHEET = 'sheet',
   TITLE = 'title',
   TEXT = 'text',

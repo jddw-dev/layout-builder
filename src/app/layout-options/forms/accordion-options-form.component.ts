@@ -11,9 +11,14 @@ import { SliderModule } from 'primeng/slider';
 
 @Component({
   standalone: true,
-  selector: 'container-options-form',
+  selector: 'accordion-options-form',
   imports: [FormsModule, ColorPickerModule, SliderModule],
   template: `
+    <div class="mb-3">
+      <label>Title</label>
+      <input class="form-control" [(ngModel)]="title" />
+    </div>
+
     <div class="mb-3 text-center">
       <label>Arrière plan</label>
       <p-colorPicker
@@ -45,7 +50,8 @@ import { SliderModule } from 'primeng/slider';
   `,
   styles: [],
 })
-export class ContainersFormComponent implements OnChanges {
+export class AccordionOptionsFormComponent implements OnChanges {
+  @Input({ required: true }) title: string;
   @Input() styles?: { property: string; value: string }[];
   @Output() optionsSaved: EventEmitter<any> = new EventEmitter<any>();
 
@@ -67,6 +73,7 @@ export class ContainersFormComponent implements OnChanges {
 
   submit(): void {
     this.optionsSaved.emit({
+      title: this.title,
       styles: this.buildStyles(),
     });
   }

@@ -1,8 +1,17 @@
 import { NgClass, NgSwitch, NgSwitchCase } from '@angular/common';
-import { Component, ElementRef, Input, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { LetDirective } from '@ngrx/component';
 import { DragDropModule } from 'primeng/dragdrop';
 import { TemplateElement } from '../core/models/template-element';
+import { StyleManagerService } from '../core/services/style-manager.service';
+import { AccordionElementComponent } from '../layout-elements/accordion-element.component';
 import { ColElementComponent } from '../layout-elements/col-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
@@ -15,6 +24,7 @@ import { BuilderFacade } from './../+state/builder.facade';
     MainElementComponent,
     RowElementComponent,
     ColElementComponent,
+    AccordionElementComponent,
     TitleElementComponent,
     TextElementComponent,
     DragDropModule,
@@ -30,12 +40,12 @@ import { BuilderFacade } from './../+state/builder.facade';
       [id]="element.id"
       [ngSwitch]="element.type"
       pDroppable
-      class="element-wrapper"
+      class="element-wrapper element-wrapper__{{ element.type }}"
       [ngClass]="{
         ghost: element.isGhost,
         selected: selectedElement?.id === element.id
       }"
-      [style]="getStyles()"
+      [style]="styles"
       (onDrop)="drop($event)"
       (onDragEnter)="dragEnter($event)"
       (click)="click($event)"
@@ -55,12 +65,24 @@ import { BuilderFacade } from './../+state/builder.facade';
         [content]="element.content"
       ></col-element>
 
+      <accordion-element
+        *ngSwitchCase="'accordion'"
+        [content]="element.content"
+        [title]="element.title"
+        [styles]="element.styles"
+      ></accordion-element>
+
       <title-element
         *ngSwitchCase="'title'"
         [title]="element.title"
+        [styles]="element.styles"
       ></title-element>
 
-      <text-element *ngSwitchCase="'text'" [text]="element.text"></text-element>
+      <text-element
+        *ngSwitchCase="'text'"
+        [text]="element.text"
+        [styles]="element.styles"
+      ></text-element>
     </div>
   `,
   styles: [
@@ -71,6 +93,13 @@ import { BuilderFacade } from './../+state/builder.facade';
 
       .element-wrapper {
         cursor: pointer;
+
+        border: #cccccc dashed 2px;
+        margin: 20px 10px;
+
+        &__row {
+          border: none;
+        }
 
         .selected {
           background: rgba(0, 255, 0, 0.5);
@@ -85,22 +114,21 @@ import { BuilderFacade } from './../+state/builder.facade';
   ],
   standalone: true,
 })
-export class TemplateElementPreviewComponent {
+export class TemplateElementPreviewComponent implements OnChanges {
   @Input({ required: true }) element: TemplateElement;
 
-  private builderFacade = inject(BuilderFacade);
   private elementRef = inject(ElementRef);
 
+  private builderFacade = inject(BuilderFacade);
   selectedElement$ = this.builderFacade.selectedElement$;
 
-  getStyles(): any {
-    const styles: any = {};
+  private styleManager = inject(StyleManagerService);
+  styles: any;
 
-    this.element.styles?.forEach((style) => {
-      styles[style.property] = style.value;
-    });
-
-    return styles;
+  ngOnChanges(changes: SimpleChanges): void {
+    this.styles = this.styleManager.getStylesForNgStyle(
+      this.element.styles ?? []
+    );
   }
 
   drop(event: any) {
@@ -128,9 +156,15 @@ export class TemplateElementPreviewComponent {
     const dropPosition = { x: event.clientX, y: event.clientY };
 
     // Get element children
-    const children =
+    let children =
       this.elementRef.nativeElement.children[0]?.children[0]?.children[0]
         ?.children;
+
+    // Accordion specific case
+    // TODO : find a better way to handle this ?
+    if (this.element.type === 'accordion') {
+      children = children[1]?.children;
+    }
 
     let insertAfterId: string | null = null;
     if (children) {

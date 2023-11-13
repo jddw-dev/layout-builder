@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TemplateElementItemType } from './../models/template-element-item';
+import { AccordionTemplateElement } from './interfaces/accordion.template-element';
 import { TemplateElementBuilder } from './interfaces/core/template-element-builder.interface';
 import { OneColHalfTemplateElement } from './interfaces/one-col-half.template-element';
 import { TextTemplateElement } from './interfaces/text.template-element';
@@ -21,6 +22,9 @@ export class TemplateElementBuilderFactory {
 
       case TemplateElementItemType.THREE_COLS:
         return new ThreeColsTemplateElement();
+
+      case TemplateElementItemType.ACCORDION:
+        return new AccordionTemplateElement();
 
       case TemplateElementItemType.TITLE:
         return new TitleTemplateElement();

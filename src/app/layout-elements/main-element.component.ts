@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { NgFor } from '@angular/common';
 import { Component, Input, forwardRef } from '@angular/core';
 import { TemplateElement } from '../core/models/template-element';
 import { TemplateElementPreviewComponent } from '../template-element-preview/template-element-preview.component';
@@ -6,7 +6,7 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
 @Component({
   selector: 'main-element',
   standalone: true,
-  imports: [CommonModule, forwardRef(() => TemplateElementPreviewComponent)],
+  imports: [NgFor, forwardRef(() => TemplateElementPreviewComponent)],
   template: `
     <div class="main-element element-preview">
       <template-element-preview
@@ -19,9 +19,6 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
     `
       .main-element {
         width: 100%;
-        padding: 10px;
-        border: #000000 dashed 2px;
-        border-radius: 2px;
       }
     `,
   ],

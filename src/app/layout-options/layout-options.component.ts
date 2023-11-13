@@ -2,6 +2,7 @@ import { NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { TemplateElement } from '../core/models/template-element';
 import { BuilderFacade } from './../+state/builder.facade';
+import { AccordionOptionsFormComponent } from './forms/accordion-options-form.component';
 import { ContainersFormComponent } from './forms/containers-form.component';
 import { TextOptionsFormComponent } from './forms/text-options-form.component';
 import { TitleOptionsFormComponent } from './forms/title-options-form.component';
@@ -13,6 +14,7 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
     TitleOptionsFormComponent,
     TextOptionsFormComponent,
     ContainersFormComponent,
+    AccordionOptionsFormComponent,
     NgIf,
   ],
   template: `
@@ -21,23 +23,32 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
       {{ selectedElement.type }}
     </h3>
 
-    <title-options-form
-      *ngIf="selectedElement.type === 'title'"
-      [title]="selectedElement.title!"
-      (optionsSaved)="saveOptions($event)"
-    ></title-options-form>
+    <div>
+      <title-options-form
+        *ngIf="selectedElement.type === 'title'"
+        [title]="selectedElement.title!"
+        (optionsSaved)="saveOptions($event)"
+      ></title-options-form>
 
-    <text-options-form
-      *ngIf="selectedElement.type === 'text'"
-      [text]="selectedElement.text!"
-      (optionsSaved)="saveOptions($event)"
-    ></text-options-form>
+      <text-options-form
+        *ngIf="selectedElement.type === 'text'"
+        [text]="selectedElement.text!"
+        (optionsSaved)="saveOptions($event)"
+      ></text-options-form>
 
-    <container-options-form
-      *ngIf="['main', 'row', 'column'].includes(selectedElement.type)"
-      [styles]="selectedElement.styles!"
-      (optionsSaved)="saveOptions($event)"
-    ></container-options-form>
+      <accordion-options-form
+        *ngIf="selectedElement.type === 'accordion'"
+        [title]="selectedElement.title!"
+        [styles]="selectedElement.styles!"
+        (optionsSaved)="saveOptions($event)"
+      ></accordion-options-form>
+
+      <container-options-form
+        *ngIf="['main', 'row', 'column'].includes(selectedElement.type)"
+        [styles]="selectedElement.styles!"
+        (optionsSaved)="saveOptions($event)"
+      ></container-options-form>
+    </div>
   `,
   styles: [],
 })
@@ -47,7 +58,6 @@ export class LayoutOptionsComponent {
   private builderFacade = inject(BuilderFacade);
 
   saveOptions(options: any): void {
-    // TODO : les options ne s'update pas si le type ne change pas !!
     this.builderFacade.updateElement({
       ...this.selectedElement,
       ...options,
