@@ -1,5 +1,12 @@
 import { NgClass, NgSwitch, NgSwitchCase } from '@angular/common';
-import { Component, ElementRef, Input, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { LetDirective } from '@ngrx/component';
 import { DragDropModule } from 'primeng/dragdrop';
 import { TemplateElement } from '../core/models/template-element';
@@ -36,7 +43,7 @@ import { BuilderFacade } from './../+state/builder.facade';
         ghost: element.isGhost,
         selected: selectedElement?.id === element.id
       }"
-      [style]="getStyles()"
+      [style]="styles"
       (onDrop)="drop($event)"
       (onDragEnter)="dragEnter($event)"
       (click)="click($event)"
@@ -59,6 +66,7 @@ import { BuilderFacade } from './../+state/builder.facade';
       <title-element
         *ngSwitchCase="'title'"
         [title]="element.title"
+        [styles]="element.styles"
       ></title-element>
 
       <text-element *ngSwitchCase="'text'" [text]="element.text"></text-element>
@@ -93,7 +101,7 @@ import { BuilderFacade } from './../+state/builder.facade';
   ],
   standalone: true,
 })
-export class TemplateElementPreviewComponent {
+export class TemplateElementPreviewComponent implements OnChanges {
   @Input({ required: true }) element: TemplateElement;
 
   private elementRef = inject(ElementRef);
@@ -102,9 +110,12 @@ export class TemplateElementPreviewComponent {
   selectedElement$ = this.builderFacade.selectedElement$;
 
   private styleManager = inject(StyleManagerService);
+  styles: any;
 
-  getStyles(): any {
-    return this.styleManager.getStylesForNgStyle(this.element.styles ?? []);
+  ngOnChanges(changes: SimpleChanges): void {
+    this.styles = this.styleManager.getStylesForNgStyle(
+      this.element.styles ?? []
+    );
   }
 
   drop(event: any) {

@@ -57,6 +57,12 @@ export class TitleOptionsFormComponent implements OnChanges {
   submit(): void {
     this.optionsSaved.emit({
       title: this.title,
+      styles: [
+        {
+          property: 'fontSize',
+          value: `${this.fontSize}px`,
+        },
+      ],
     });
   }
 }
