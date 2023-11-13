@@ -11,6 +11,7 @@ import { LetDirective } from '@ngrx/component';
 import { DragDropModule } from 'primeng/dragdrop';
 import { TemplateElement } from '../core/models/template-element';
 import { StyleManagerService } from '../core/services/style-manager.service';
+import { AccordionElementComponent } from '../layout-elements/accordion-element.component';
 import { ColElementComponent } from '../layout-elements/col-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
@@ -23,6 +24,7 @@ import { BuilderFacade } from './../+state/builder.facade';
     MainElementComponent,
     RowElementComponent,
     ColElementComponent,
+    AccordionElementComponent,
     TitleElementComponent,
     TextElementComponent,
     DragDropModule,
@@ -62,6 +64,12 @@ import { BuilderFacade } from './../+state/builder.facade';
         *ngSwitchCase="'column'"
         [content]="element.content"
       ></col-element>
+
+      <accordion-element
+        *ngSwitchCase="'accordion'"
+        [content]="element.content"
+        [styles]="element.styles"
+      ></accordion-element>
 
       <title-element
         *ngSwitchCase="'title'"
@@ -147,9 +155,15 @@ export class TemplateElementPreviewComponent implements OnChanges {
     const dropPosition = { x: event.clientX, y: event.clientY };
 
     // Get element children
-    const children =
+    let children =
       this.elementRef.nativeElement.children[0]?.children[0]?.children[0]
         ?.children;
+
+    // Accordion specific case
+    // TODO : find a better way to handle this ?
+    if (this.element.type === 'accordion') {
+      children = children[1]?.children;
+    }
 
     let insertAfterId: string | null = null;
     if (children) {

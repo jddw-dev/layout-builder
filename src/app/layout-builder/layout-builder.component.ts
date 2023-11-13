@@ -41,6 +41,7 @@ import { DEFAULT_LAYOUT } from './default-layout';
         </div>
 
         <div
+          (click)="onOptionsClick($event)"
           *ngIf="selectedElement$ | async as selectedElement"
           class="layout-builder__options col-2 col-md-2"
         >
@@ -101,6 +102,12 @@ export class LayoutBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     this.builderFacade.loadLayout(DEFAULT_LAYOUT);
+  }
+
+  // Prevent from closing options panel when clicking on it
+  onOptionsClick(event: any): void {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   removeSelectedElement(): void {

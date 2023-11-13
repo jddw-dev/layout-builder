@@ -35,7 +35,9 @@ import { TitleOptionsFormComponent } from './forms/title-options-form.component'
       ></text-options-form>
 
       <container-options-form
-        *ngIf="['main', 'row', 'column'].includes(selectedElement.type)"
+        *ngIf="
+          ['main', 'row', 'column', 'accordion'].includes(selectedElement.type)
+        "
         [styles]="selectedElement.styles!"
         (optionsSaved)="saveOptions($event)"
       ></container-options-form>
