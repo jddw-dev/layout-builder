@@ -69,7 +69,11 @@ import { BuilderFacade } from './../+state/builder.facade';
         [styles]="element.styles"
       ></title-element>
 
-      <text-element *ngSwitchCase="'text'" [text]="element.text"></text-element>
+      <text-element
+        *ngSwitchCase="'text'"
+        [text]="element.text"
+        [styles]="element.styles"
+      ></text-element>
     </div>
   `,
   styles: [
