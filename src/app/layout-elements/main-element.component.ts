@@ -19,9 +19,6 @@ import { TemplateElementPreviewComponent } from '../template-element-preview/tem
     `
       .main-element {
         width: 100%;
-        padding: 10px;
-        border: #000000 dashed 2px;
-        border-radius: 2px;
       }
     `,
   ],

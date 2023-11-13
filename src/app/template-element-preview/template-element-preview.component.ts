@@ -30,7 +30,7 @@ import { BuilderFacade } from './../+state/builder.facade';
       [id]="element.id"
       [ngSwitch]="element.type"
       pDroppable
-      class="element-wrapper"
+      class="element-wrapper element-wrapper__{{ element.type }}"
       [ngClass]="{
         ghost: element.isGhost,
         selected: selectedElement?.id === element.id
@@ -71,6 +71,13 @@ import { BuilderFacade } from './../+state/builder.facade';
 
       .element-wrapper {
         cursor: pointer;
+
+        border: #cccccc dashed 2px;
+        margin: 20px 10px;
+
+        &__row {
+          border: none;
+        }
 
         .selected {
           background: rgba(0, 255, 0, 0.5);
