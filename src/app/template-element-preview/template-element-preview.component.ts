@@ -3,6 +3,7 @@ import { Component, ElementRef, Input, inject } from '@angular/core';
 import { LetDirective } from '@ngrx/component';
 import { DragDropModule } from 'primeng/dragdrop';
 import { TemplateElement } from '../core/models/template-element';
+import { StyleManagerService } from '../core/services/style-manager.service';
 import { ColElementComponent } from '../layout-elements/col-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
@@ -95,19 +96,15 @@ import { BuilderFacade } from './../+state/builder.facade';
 export class TemplateElementPreviewComponent {
   @Input({ required: true }) element: TemplateElement;
 
-  private builderFacade = inject(BuilderFacade);
   private elementRef = inject(ElementRef);
 
+  private builderFacade = inject(BuilderFacade);
   selectedElement$ = this.builderFacade.selectedElement$;
 
+  private styleManager = inject(StyleManagerService);
+
   getStyles(): any {
-    const styles: any = {};
-
-    this.element.styles?.forEach((style) => {
-      styles[style.property] = style.value;
-    });
-
-    return styles;
+    return this.styleManager.getStylesForNgStyle(this.element.styles ?? []);
   }
 
   drop(event: any) {

@@ -4,45 +4,59 @@ import {
   Input,
   OnChanges,
   Output,
-  inject,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { SliderModule } from 'primeng/slider';
+import { Style } from '../../core/models/style';
 
 @Component({
   standalone: true,
   selector: 'title-options-form',
-  imports: [ReactiveFormsModule],
+  imports: [FormsModule, SliderModule],
   template: `
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <div>
       <div class="mb-3">
         <label>Title</label>
-        <input class="form-control" formControlName="title" />
+        <input class="form-control" [(ngModel)]="title" />
       </div>
 
-      <button type="submit" class="btn btn-primary btn-sm">Save</button>
-    </form>
+      <div class="mb-3">
+        <label>Taille</label>
+        <p-slider [(ngModel)]="fontSize" [min]="10" [max]="50"></p-slider>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="fontSize"
+          [value]="fontSize"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-sm" (click)="submit()">
+        Save
+      </button>
+    </div>
   `,
   styles: [],
 })
 export class TitleOptionsFormComponent implements OnChanges {
   @Input({ required: true }) title: string;
+  @Input() styles?: Style[];
   @Output() optionsSaved: EventEmitter<any> = new EventEmitter<any>();
 
-  private formBuilder = inject(FormBuilder);
-  form!: FormGroup;
+  fontSize?: number;
 
   ngOnChanges(): void {
-    this.form = this.formBuilder.group({
-      title: new FormControl(this.title),
-    });
+    const fontSizeStyle = this.styles?.find(
+      (style) => style.property === 'fontSize'
+    );
+    this.fontSize = fontSizeStyle
+      ? parseInt(fontSizeStyle.value.replace('px', ''))
+      : 30;
   }
 
   submit(): void {
-    this.optionsSaved.emit(this.form.value);
+    this.optionsSaved.emit({
+      title: this.title,
+    });
   }
 }
