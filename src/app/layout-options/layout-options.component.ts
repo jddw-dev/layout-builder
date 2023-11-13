@@ -47,7 +47,6 @@ export class LayoutOptionsComponent {
   private builderFacade = inject(BuilderFacade);
 
   saveOptions(options: any): void {
-    // TODO : les options ne s'update pas si le type ne change pas !!
     this.builderFacade.updateElement({
       ...this.selectedElement,
       ...options,
