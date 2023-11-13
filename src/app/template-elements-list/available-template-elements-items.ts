@@ -28,7 +28,7 @@ export const availableTemplateElementsItems: TemplateElementItem[] = [
   {
     type: TemplateElementItemType.ACCORDION,
     displayName: 'accordion',
-    // image: 'assets/images/accordion.png',
+    image: 'assets/images/accordion.png',
     isContainer: true,
   },
 
