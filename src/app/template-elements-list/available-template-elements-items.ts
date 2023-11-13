@@ -34,28 +34,28 @@ export const availableTemplateElementsItems: TemplateElementItem[] = [
 
   {
     type: TemplateElementItemType.TAB,
-    displayName: 'tab',
+    displayName: 'Onglet',
     // image: 'assets/images/tab.png',
     isContainer: false,
   },
 
   {
     type: TemplateElementItemType.DIVIDER,
-    displayName: 'divider',
+    displayName: 'Séparateur',
     // image: 'assets/images/divider.png',
     isContainer: false,
   },
 
   {
     type: TemplateElementItemType.TITLE,
-    displayName: 'title',
+    displayName: 'Titre',
     // image: 'assets/images/title.png',
     isContainer: false,
   },
 
   {
     type: TemplateElementItemType.TEXT,
-    displayName: 'text',
+    displayName: 'Texte',
     // image: 'assets/images/text.png',
     isContainer: false,
   },

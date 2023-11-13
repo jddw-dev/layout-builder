@@ -13,6 +13,7 @@ import { TemplateElement } from '../core/models/template-element';
 import { StyleManagerService } from '../core/services/style-manager.service';
 import { AccordionElementComponent } from '../layout-elements/accordion-element.component';
 import { ColElementComponent } from '../layout-elements/col-element.component';
+import { DividerElementComponent } from '../layout-elements/divider-element.component';
 import { MainElementComponent } from '../layout-elements/main-element.component';
 import { RowElementComponent } from '../layout-elements/row-element.component';
 import { TextElementComponent } from '../layout-elements/text-element.component';
@@ -27,6 +28,7 @@ import { BuilderFacade } from './../+state/builder.facade';
     AccordionElementComponent,
     TitleElementComponent,
     TextElementComponent,
+    DividerElementComponent,
     DragDropModule,
     NgClass,
     NgSwitch,
@@ -71,6 +73,8 @@ import { BuilderFacade } from './../+state/builder.facade';
         [title]="element.title"
         [styles]="element.styles"
       ></accordion-element>
+
+      <divider-component *ngSwitchCase="'divider'"></divider-component>
 
       <title-element
         *ngSwitchCase="'title'"
