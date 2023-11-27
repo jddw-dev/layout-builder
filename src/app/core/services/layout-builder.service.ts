@@ -182,4 +182,32 @@ export class LayoutBuilderService {
 
     return updatedElement;
   }
+
+  removeElement(
+    parentElement: TemplateElement,
+    elementId: string
+  ): TemplateElement | null {
+    let updatedElement: TemplateElement = { ...parentElement };
+
+    if (updatedElement.id === elementId) {
+      // We found the right element
+      return null;
+    } else {
+      // Update in children
+      const updatedChildren: TemplateElement[] = [];
+
+      if (updatedElement.content) {
+        for (const child of updatedElement.content) {
+          const updatedChild = this.removeElement(child, elementId);
+          if (updatedChild) {
+            updatedChildren.push(updatedChild);
+          }
+        }
+      }
+
+      updatedElement.content = updatedChildren;
+    }
+
+    return updatedElement;
+  }
 }

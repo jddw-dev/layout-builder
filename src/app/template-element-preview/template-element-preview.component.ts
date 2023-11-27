@@ -20,6 +20,9 @@ import { TextElementComponent } from '../layout-elements/text-element.component'
 import { TitleElementComponent } from '../layout-elements/title-element.component';
 import { BuilderFacade } from './../+state/builder.facade';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   imports: [
     MainElementComponent,
@@ -34,6 +37,7 @@ import { BuilderFacade } from './../+state/builder.facade';
     NgSwitch,
     NgSwitchCase,
     LetDirective,
+    FontAwesomeModule,
   ],
   selector: 'template-element-preview',
   template: `
@@ -87,6 +91,12 @@ import { BuilderFacade } from './../+state/builder.facade';
         [text]="element.text"
         [styles]="element.styles"
       ></text-element>
+
+      <fa-icon
+        [icon]="faTrash"
+        class="delete-icon"
+        (click)="removeElement($event, element.id!)"
+      ></fa-icon>
     </div>
   `,
   styles: [
@@ -113,6 +123,21 @@ import { BuilderFacade } from './../+state/builder.facade';
           background: #000000;
           opacity: 0.3;
         }
+
+        position: relative;
+
+        .delete-icon {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+
+          z-index: 0;
+        }
+
+        &__main > .delete-icon,
+        &__row > .delete-icon {
+          display: none;
+        }
       }
     `,
   ],
@@ -128,6 +153,8 @@ export class TemplateElementPreviewComponent implements OnChanges {
 
   private styleManager = inject(StyleManagerService);
   styles: any;
+
+  faTrash = faTrash;
 
   ngOnChanges(changes: SimpleChanges): void {
     this.styles = this.styleManager.getStylesForNgStyle(
@@ -213,5 +240,12 @@ export class TemplateElementPreviewComponent implements OnChanges {
     if (this.element.id) {
       this.builderFacade.selectElement(this.element);
     }
+  }
+
+  removeElement(e: any, id: string) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.builderFacade.removeElement(id);
   }
 }

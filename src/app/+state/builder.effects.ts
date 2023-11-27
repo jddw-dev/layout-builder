@@ -155,4 +155,31 @@ export class BuilderEffects {
       )
     )
   );
+
+  removeElement$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BuilderActions.removeElement),
+      pipe(
+        withLatestFrom(this.builderFacade.currentLayout$),
+        switchMap(([{ elementId }, currentLayout]) => {
+          if (!currentLayout) {
+            return EMPTY;
+          }
+
+          const updatedLayout = this.layoutBuilderService.removeElement(
+            currentLayout,
+            elementId
+          );
+
+          if (updatedLayout) {
+            return of(
+              BuilderActions.loadLayoutSuccess({ layout: updatedLayout })
+            );
+          } else {
+            return EMPTY;
+          }
+        })
+      )
+    )
+  );
 }

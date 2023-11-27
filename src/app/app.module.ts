@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppizyStoreModule } from './store.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [AppComponent],
@@ -14,6 +15,7 @@ import { AppizyStoreModule } from './store.module';
     BrowserAnimationsModule,
 
     AppizyStoreModule,
+     FontAwesomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

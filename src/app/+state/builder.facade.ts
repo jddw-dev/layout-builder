@@ -60,4 +60,8 @@ export class BuilderFacade {
   updateElement(element: TemplateElement) {
     this.store.dispatch(BuilderActions.updateElement({ element }));
   }
+
+  removeElement(elementId: string) {
+    this.store.dispatch(BuilderActions.removeElement({ elementId }));
+  }
 }
