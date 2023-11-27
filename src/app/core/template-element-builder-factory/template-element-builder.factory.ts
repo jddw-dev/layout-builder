@@ -8,6 +8,7 @@ import { TextTemplateElement } from './interfaces/text.template-element';
 import { ThreeColsTemplateElement } from './interfaces/three-cols.template-element';
 import { TitleTemplateElement } from './interfaces/title.template-element';
 import { TwoColsTemplateElement } from './interfaces/two-cols.template-element';
+import { SheetTemplateElement } from './sheet.template-element';
 
 @Injectable({ providedIn: 'root' })
 export class TemplateElementBuilderFactory {
@@ -35,6 +36,9 @@ export class TemplateElementBuilderFactory {
 
       case TemplateElementItemType.TEXT:
         return new TextTemplateElement();
+
+      case TemplateElementItemType.SHEET:
+        return new SheetTemplateElement();
 
       default:
         return null;

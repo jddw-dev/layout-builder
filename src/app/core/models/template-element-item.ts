@@ -3,10 +3,10 @@ export enum TemplateElementItemType {
   TWO_COLS = 'two-cols',
   THREE_COLS = 'three-cols',
   ACCORDION = 'accordion',
-  TAB = 'tab',
   DIVIDER = 'divider',
   TITLE = 'title',
   TEXT = 'text',
+  SHEET = 'sheet',
 }
 
 export interface TemplateElementItem {

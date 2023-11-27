@@ -33,9 +33,9 @@ export const availableTemplateElementsItems: TemplateElementItem[] = [
   },
 
   {
-    type: TemplateElementItemType.TAB,
+    type: TemplateElementItemType.SHEET,
     displayName: 'Onglet',
-    // image: 'assets/images/tab.png',
+    // image: 'assets/images/sheet.png',
     isContainer: false,
   },
 

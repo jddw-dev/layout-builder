@@ -6,7 +6,6 @@ export enum TemplateElementType {
   SHEET = 'sheet',
   TITLE = 'title',
   TEXT = 'text',
-  TAB = 'tab',
   DIVIDER = 'divider',
 }
 

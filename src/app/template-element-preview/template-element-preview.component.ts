@@ -22,6 +22,7 @@ import { BuilderFacade } from './../+state/builder.facade';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { SheetElementComponent } from '../layout-elements/sheet-element.component';
 
 @Component({
   imports: [
@@ -32,6 +33,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
     TitleElementComponent,
     TextElementComponent,
     DividerElementComponent,
+    SheetElementComponent,
     DragDropModule,
     NgClass,
     NgSwitch,
@@ -91,6 +93,8 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
         [text]="element.text"
         [styles]="element.styles"
       ></text-element>
+
+      <sheet-element *ngSwitchCase="'sheet'"></sheet-element>
 
       <fa-icon
         [icon]="faTrash"
